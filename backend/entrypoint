@@ -3,11 +3,8 @@
 /**
  * Module dependencies.
  */
-
-var app = require('./express_app');
-var debug = require('debug')('axiom-web:backend');
-var http = require('http');
-
+const app = require("./express_app");
+const http = require("http")
 
 /**
  * Get port from environment and store in Express.
@@ -93,5 +90,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }

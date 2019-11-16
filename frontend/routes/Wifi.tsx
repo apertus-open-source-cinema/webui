@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {exec_table, exec} from "../exec/exec";
 
 export const text = "Wifi Configuration";
