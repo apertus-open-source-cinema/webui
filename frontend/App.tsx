@@ -25,6 +25,7 @@ const useStyles = makeStyles(theme => ({
     },
     content: {
         flexGrow: 1,
+        maxWidth: `calc(100vw - ${drawerWidth}px)`,
     },
     toolbar: theme.mixins.toolbar,
 }));
@@ -53,43 +54,41 @@ function ListItemLink(props) {
 export function App(props: any) {
     const classes = useStyles();
     return (
-        <Router>
-            <div className={classes.root}>
-                <AppBar position="fixed" className={classes.appBar}>
-                    <Toolbar>
-                        <Typography variant="h6" noWrap>
-                            AXIOM WebUi -&nbsp;
-                            <Switch>
-                                {Object.values(routes).map(({route, text}: any) =>
-                                    <Route exact path={route} key={route}>{text}</Route>)
-                                }
-                            </Switch>
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
+                <div className={classes.root}>
+                    <AppBar position="fixed" className={classes.appBar}>
+                        <Toolbar>
+                            <Typography variant="h6" noWrap>
+                                AXIOM WebUi -&nbsp;
+                                <Switch>
+                                    {Object.values(routes).map(({route, text}: any) =>
+                                        <Route exact path={route} key={route}>{text}</Route>)
+                                    }
+                                </Switch>
+                            </Typography>
+                        </Toolbar>
+                    </AppBar>
 
-                <Drawer
-                    className={classes.drawer}
-                    variant="permanent"
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <div className={classes.toolbar} />
-                    <List>
-                        {Object.values(routes).map(({route, text}: any) => (
-                            <ListItemLink to={route} primary={text} key={route}/>
-                        ))}
-                    </List>
-                </Drawer>
+                    <Drawer
+                        className={classes.drawer}
+                        variant="permanent"
+                        classes={{
+                            paper: classes.drawerPaper,
+                        }}
+                    >
+                        <div className={classes.toolbar} />
+                        <List>
+                            {Object.values(routes).map(({route, text}: any) => (
+                                <ListItemLink to={route} primary={text} key={route}/>
+                            ))}
+                        </List>
+                    </Drawer>
 
-                <div className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <Switch>
-                        {Object.values(routes).map(({route, Component}: any) => <Route exact path={route} key={route}
-                                                                                       component={Component}/>)}
-                    </Switch>
-                </div>
-            </div>
-        </Router>);
+                    <div className={classes.content}>
+                        <div className={classes.toolbar}/>
+                        <Switch>
+                            {Object.values(routes).map(({route, Component}: any) => <Route exact path={route} key={route}
+                                                                                           component={Component}/>)}
+                        </Switch>
+                    </div>
+                </div>);
 }

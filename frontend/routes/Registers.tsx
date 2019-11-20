@@ -1,8 +1,8 @@
 import * as React from "react";
-import {makeStyles} from "@material-ui/core";
+import {useCallback, useEffect, useState} from "react";
+import {makeStyles, Typography} from "@material-ui/core";
 import {ls} from '../exec/ls';
-import {useEffect, useState} from "react";
-import {exec} from "../exec/exec";
+import {Value} from "../components/exec_components";
 
 export const text = "Register Explorer";
 export const route = "/registers";
@@ -11,12 +11,17 @@ const column_width = "300px";
 const useStyles = makeStyles(theme => ({
     column_container: {
         display: 'flex',
-        height: '100%',
+        height: 'calc(100vh - 64px)',
         width: '100%',
         overflowX: 'scroll',
+        scrollbarWidth: 'thin',
+        scrollbarColor: 'lightgray transparent',
     },
     column: {
         height: '100%',
+        overflowY: 'scroll',
+        scrollbarWidth: 'thin',
+        scrollbarColor: 'lightgray transparent',
         width: column_width,
         borderRight: '1px solid lightgray',
         flexShrink: 0,
@@ -34,9 +39,9 @@ const useStyles = makeStyles(theme => ({
         color: 'white',
     },
     float_right: {
-        float: 'right',
         fontStyle: 'italic',
         color: '#555',
+        float: 'right',
     },
 }));
 
@@ -46,6 +51,15 @@ export function Component(props) {
     const classes = useStyles();
 
     const [active, setActive] = useState([basepath]);
+    const [node, setNode] = useState(React.createRef());
+    useEffect(() => {
+        console.log(node.current);
+        if (node.current) {
+            node.current.scrollTo(10e10, 0);
+        }
+
+    }, [active, node]);
+
     const columns = active.map((x, i) =>
         <Column
             key={i}
@@ -55,7 +69,7 @@ export function Component(props) {
         />);
 
     return (
-        <div className={classes.column_container}>
+        <div ref={(ref => setNode(ref))} className={classes.column_container}>
             {columns}
         </div>
     );
@@ -109,7 +123,7 @@ function ListColumn(props) {
     const {path} = props;
     const classes = useStyles();
 
-    const [entries, setEntries] = useState([]);
+    const [entries, setEntries] = useState([] as string[]);
     useEffect(() => {
         ls(path).then(result => setEntries(result));
     }, [path]);
@@ -155,17 +169,10 @@ function ListEntry(props) {
             className={(classes.li + (active === name ? " " + classes.active : ""))}
             onClick={() => setActive(name)}
         >
-            {name.replace(/\/$/, "")}<span className={classes.float_right}>{right}</span>
+            <Typography>
+                {name.replace(/\/$/, "")}<span className={classes.float_right}>{right}</span>
+            </Typography>
         </li>
     )
 }
 
-function Value(props) {
-    const {path} = props;
-    const [value, setValue] = useState("");
-    useEffect(() => {
-        exec(`cat "${path}"`).then(([stdout, stderr]) => setValue(stdout));
-    }, [path]);
-
-    return <>{value}</>;
-}
