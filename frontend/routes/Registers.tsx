@@ -9,6 +9,11 @@ export const route = "/registers";
 
 const column_width = "300px";
 const useStyles = makeStyles(theme => ({
+    list_content: {
+	    display: 'inline-block',
+		width: '100%',
+    }
+
     column_container: {
         display: 'flex',
         height: 'calc(100vh - 64px)',
@@ -32,6 +37,7 @@ const useStyles = makeStyles(theme => ({
         padding: 0,
     },
     li: {
+		position: 'relative',
         padding: '5px 10px',
     },
     active: {
@@ -169,8 +175,10 @@ function ListEntry(props) {
             className={(classes.li + (active === name ? " " + classes.active : ""))}
             onClick={() => setActive(name)}
         >
-            <Typography>
-                {name.replace(/\/$/, "")}<span className={classes.float_right}>{right}</span>
+			<Typography>
+				<div className={classes.list_content}>
+					{name.replace(/\/$/, "")}<span className={classes.float_right}>{right}</span>
+				 </div>
             </Typography>
         </li>
     )
