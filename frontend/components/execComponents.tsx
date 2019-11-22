@@ -1,5 +1,7 @@
 import {default as React, useEffect, useState} from "react";
-import {exec} from "../exec/exec";
+import {exec} from "../util/exec";
+import {ctrl} from "../util/ctrl";
+import {usePromise} from "../util/usePromise";
 
 export function PlainCommand(props) {
     const {command, interval} = props;
@@ -12,14 +14,4 @@ export function PlainCommand(props) {
     }, [command]);
 
     return <pre style={{backgroundColor: '#eee'}}>{output}</pre>
-}
-
-export function Value(props) {
-    const {path} = props;
-    const [value, setValue] = useState("");
-    useEffect(() => {
-        exec(`cat "${path}"`).then(([stdout, stderr]) => setValue(stdout));
-    }, [path]);
-
-    return <>{value}</>;
 }

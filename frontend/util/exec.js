@@ -6,10 +6,10 @@ if(!window.socket) {
 }
 
 export async function exec(command) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         window.socket.emit("exec", command, (error, stdout, stderr) => {
             if(error) {
-                throw error;
+                reject(error);
             }
             resolve([stdout, stderr]);
         })

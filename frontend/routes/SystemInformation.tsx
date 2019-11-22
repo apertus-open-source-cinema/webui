@@ -1,5 +1,5 @@
 import * as React from "react";
-import {PlainCommand} from "../components/exec_components";
+import {PlainCommand} from "../components/execComponents";
 
 export const text = "System Information";
 export const route = "/system_information";

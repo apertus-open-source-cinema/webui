@@ -1,13 +1,14 @@
 import * as React from "react";
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {makeStyles, Typography} from "@material-ui/core";
-import {ls} from '../exec/ls';
-import {Value} from "../components/exec_components";
+import {usePromise} from "../util/usePromise";
+import {ctrl} from "../util/ctrl";
+import {Value} from "../components/PromiseValue";
 
 export const text = "Register Explorer";
 export const route = "/registers";
 
-const column_width = "300px";
+const column_width = "275px";
 const useStyles = makeStyles(theme => ({
     column_container: {
         display: 'flex',
@@ -19,7 +20,7 @@ const useStyles = makeStyles(theme => ({
     },
     column: {
         height: '100%',
-        overflowY: 'scroll',
+        overflowY: 'auto',
         scrollbarWidth: 'thin',
         scrollbarColor: 'lightgray transparent',
         width: column_width,
@@ -34,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     li: {
         padding: '5px 10px',
     },
+    list: {
+        padding: '0 10px',
+    },
     active: {
         background: 'dodgerblue',
         color: 'white',
@@ -43,33 +47,35 @@ const useStyles = makeStyles(theme => ({
         color: '#555',
         float: 'right',
     },
+    item: {
+        display: 'inline-block',
+        width: '100%',
+    },
 }));
-
-const basepath = "./ctrl_mountpoint/";
 
 export function Component(props) {
     const classes = useStyles();
 
-    const [active, setActive] = useState([basepath]);
-    const [node, setNode] = useState(React.createRef());
-    useEffect(() => {
-        console.log(node.current);
-        if (node.current) {
-            node.current.scrollTo(10e10, 0);
+    const ref = useRef();
+    const scroll_fn = () => {
+        if(ref.current !== undefined) {
+            // @ts-ignore
+            ref.current.scrollLeft = 10e10;
         }
+    };
 
-    }, [active, node]);
-
+    const [active, setActive] = useState([ctrl]);
     const columns = active.map((x, i) =>
         <Column
             key={i}
-            path={active.slice(0, i + 1).reduce((a, b) => a + b)}
+            ctrl={x}
             setActive={x => setActive([...active.slice(0, i + 1), x])}
-            active={active[i + 1]}
+            active={active[i+1]}
+            scrollFn={scroll_fn}
         />);
 
     return (
-        <div ref={(ref => setNode(ref))} className={classes.column_container}>
+        <div ref={ref} className={classes.column_container}>
             {columns}
         </div>
     );
@@ -77,70 +83,48 @@ export function Component(props) {
 }
 
 function Column(props) {
-    const {path} = props;
+    const {ctrl, scrollFn} = props;
     const classes = useStyles();
-
 
     const inline_all = ['channel', 'addr', 'range', 'map'];
     const property = ['functions', 'registers', 'scripts'];
 
-    const [content, setContent] = useState(<></>);
-    useEffect(() => {
-        ls(path).then(files => {
-            if (!path.endsWith("/")) {
-                setContent(<DataColumn {...props}/>)
-            } else {
-                const directories = files.filter(x => x.endsWith('/')).filter(x => inline_all.every(c => c + '/' !== x));
-                if (directories.length === 0) {
-                    setContent(<ListColumn {...props}/>);
-                } else {
-                    setContent(<ListColumn {...props}/>);
-                }
-            }
-        });
-    }, [path, props]);
+    let entries = usePromise(ctrl.then(Object.keys));
+    useEffect(scrollFn, [entries]);
 
-    return (
-        <div className={classes.column}>
-            {content}
-        </div>
-    )
-}
+    if (entries === undefined) {
+        return <></>
+    }
 
-function DataColumn(props) {
-    const {path, name} = props;
-
-    return (
-        <>
-            <h4>{name}</h4>
-            path: {path.replace(basepath, '')} <br/>
-            value: <Value path={path}/>
-        </>
-    );
+    if (Array.isArray(entries)) {
+        return <ListColumn {...props}/>
+    } else {
+        return <></>;
+    }
 }
 
 function ListColumn(props) {
-    const {path} = props;
+    const {ctrl} = props;
     const classes = useStyles();
 
-    const [entries, setEntries] = useState([] as string[]);
-    useEffect(() => {
-        ls(path).then(result => setEntries(result));
-    }, [path]);
+    const entries = usePromise(ctrl.then(Object.keys));
+    if (entries === undefined) {
+        return <></>
+    }
 
     const files = entries.filter(x => !x.endsWith("/"));
     const directories = entries.filter(x => x.endsWith("/"));
 
     return (
-        <>
-            <List title={"values"} children={files} {...props}/>
-            <List title={"children"} children={directories} {...props}/>
-        </>
+        <div className={classes.column}>
+            <List children={files} {...props}/>
+            <List children={directories} {...props}/>
+        </div>
     )
 }
 
 function List(props) {
-    const {children, title, path} = props;
+    const {children, title, ctrl} = props;
     const classes = useStyles();
 
     if (children.length === 0) {
@@ -149,30 +133,31 @@ function List(props) {
 
     return (
         <>
-            <h5 className={classes.li}>{title}</h5>
+            {title ? <h5 className={classes.li}>{title}</h5> : <></>}
             <ul className={classes.ul}>
-                {children.map(x => <ListEntry key={x} name={x} right={
-                    x.endsWith("/") ? ">" : <Value path={path + x}/>
-                } {...props}/>)}
+                {children.map(x => {
+                    return <ListEntry key={x} name={x} right={<Value promise={ctrl[x]}/>} {...props}/>;
+                })}
             </ul>
         </>
     )
 }
 
 function ListEntry(props) {
-    const {name, right, active, setActive} = props;
+    const {name, right, active, setActive, ctrl} = props;
     const classes = useStyles();
 
     return (
         <li
             key={name}
-            className={(classes.li + (active === name ? " " + classes.active : ""))}
-            onClick={() => setActive(name)}
+            className={(classes.li + (active === ctrl[name] ? " " + classes.active : ""))}
+            onClick={() => setActive(ctrl[name])}
         >
-            <Typography>
-                {name.replace(/\/$/, "")}<span className={classes.float_right}>{right}</span>
-            </Typography>
+            <div className={classes.item}>
+                <Typography>
+                    {name.replace(/\/$/, "")}<span className={classes.float_right}>{right}</span>
+                </Typography>
+            </div>
         </li>
     )
 }
-

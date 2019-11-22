@@ -1,5 +1,5 @@
 import * as React from "react";
-import {exec_table, exec} from "../exec/exec";
+import {exec_table, exec} from "../util/exec";
 import {useEffect, useState} from "react";
 
 export const text = "Wifi Configuration";
