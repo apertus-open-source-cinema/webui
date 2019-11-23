@@ -3,21 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "yarn build; node backend/entrypoint",
+    "start": "node backend/entrypoint",
     "build": "NODE_ENV=development parcel build frontend/index.html --no-minify",
-    "frontend": "parcel frontend/index.html"
+    "watch": "NODE_ENV=development parcel watch frontend/index.html &\n yarn start",
+    "format": "prettier --write '{frontend,backend}/**/*.{js,jsx,ts,tsx}'"
   },
   "browserslist": [
     "last 10 Firefox versions"
   ],
   "dependencies": {
-    "@material-ui/core": "^4.6.0",
-    "@reduxjs/toolkit": "^1.0.4",
-    "@types/react": "^16.9.11",
-    "@types/react-dom": "^16.9.4",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
     "express": "~4.16.1",
+    "socketio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.1.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.2",
     "morgan": "~1.9.1",
     "parcel": "^1.12.4",
     "react": "^16.11.0",
@@ -26,10 +27,9 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.4",
     "socket.io-client": "^2.3.0",
-    "socketio": "^1.0.0"
-  },
-  "devDependencies": {
-    "@types/react-router-dom": "^5.1.2",
-    "typescript": "^3.7.2"
+    "@material-ui/core": "^4.6.0",
+    "@reduxjs/toolkit": "^1.0.4",
+    "@types/react": "^16.9.11",
+    "@types/react-dom": "^16.9.4"
   }
 }
