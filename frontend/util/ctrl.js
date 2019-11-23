@@ -8,45 +8,47 @@ import {cached_ls, cat} from "./execCommands";
 const BASE_PATH = "./ctrl_mountpoint";
 
 const handler = {get, set, ownKeys, getOwnPropertyDescriptor};
-export const ctrl = new Proxy({path: '/', cache: {}}, handler);
+export const ctrl = new Proxy({path: '/', cache: new Map()}, handler);
 window.ctrl = ctrl;
 
 function get(obj, prop) {
-    if (prop === 'path') {
-        return path => [...obj.path.split('/').filter(x => x), ...path].reduce((acc, cur) => acc[cur], ctrl)
-    } else if (prop === 'then' && obj.not_thenable) {
+    if (typeof prop === 'symbol') return undefined;
+    const cache_key = prop;
+    const {cache, path, parent} = obj;
+
+    if (prop === 'then' && obj.children) {
+        // lowered (awaited) children are not thenable anymore
         return undefined;
     } else if (prop === 'then') {
         return (callback) => {
-            // cache to guarantee stable object instances
-            const key = callback.toString();
-            if (!(key in obj.cache)){
-                obj.cache[key] = new Promise((resolve, reject) => {
-                    cached_ls(BASE_PATH + obj.path)
-                        .then(result => {
-                            resolve(new Proxy({path: obj.path, children: result, not_thenable: true, cache: obj.cache}, handler))
-                        })
-                        .catch(error => {
-                            cat(BASE_PATH + obj.path.replace(/\/$/, ''))
-                                .then(([stdout, stderr]) => {
-                                    resolve(stdout)
-                                })
-                                .catch(e => reject(`${obj.path} does not exist`));
-                        });
-                }).then(callback)
+            if (!cache.has(callback)) {
+                // cache to guarantee stable object instances
+                cache.set(callback, (async () => {
+                    const [all, parent_path, end] = path.match(/(.*)\/([^\/]*)$/);
+                    console.log(all, parent_path, end);
+                    const parent_ls = await cached_ls(BASE_PATH + parent_path);
+                    console.log(parent_ls.filter(x => x.startsWith(end)));
+                    try {
+                        const ls_result = await cached_ls(BASE_PATH + path);
+                        return callback(new Proxy({path: path, children: ls_result, cache: new Map()}, handler))
+                    } catch {
+                        try {
+                            const [std_out] = await cat(BASE_PATH + path.replace(/\/$/, ''));
+                            return callback(std_out);
+                        } catch {
+                            throw `the path '${path}' does not exist`;
+                        }
+                    }
+                })())
             }
-            return obj.cache[key]
-        }
-    } else if (prop === 'then') {
-        // this is a very ugly hack to make the browser not flatten the promise and produce an endless loop
-        obj.not_thenable = false;
-        return undefined
-    }
+            return cache.get(callback);
+        };
+}
 
-    if(!(prop in obj.cache)) {
-        obj.cache[prop] = new Proxy({path: `${obj.path}${prop}/`, cache: {}}, handler);
-    }
-    return obj.cache[prop]
+if (!cache.has(cache_key)) {
+    cache.set(cache_key, new Proxy({path: `${path}${prop}/`, cache: new Map()}, handler));
+}
+return cache.get(cache_key);
 }
 
 function set(obj, prop, value) {
@@ -54,8 +56,9 @@ function set(obj, prop, value) {
 }
 
 function ownKeys(obj) {
-    if(!obj.children) {
-        throw Error(`the children of this object are not fetched yet. did you mean (async ctrl${obj.path.replace(/\//g, '.')})?`)
+    if (!obj.children) {
+        console.warn(`the children of this object are not fetched yet. did you mean (await ctrl${obj.path.replace(/\//g, '.').replace(/\.$/g, '.')})?`)
+        return [];
     }
     return obj.children.map(x => x.replace(/\/$/, ''));
 }
@@ -64,3 +67,15 @@ function ownKeys(obj) {
 function getOwnPropertyDescriptor(obj) {
     return {enumerable: true, configurable: true}
 }
+
+function get_parent_children(path) {
+    const parent_path = path.match(/(.*)\/([^\/]*)$/)[1];
+    const parent = parent_path === '/' ? ctrl : ctrl_path(parent_path);
+    return parent;
+}
+
+
+export function ctrl_path(path) {
+    return path.split('/').filter(x => x).reduce((acc, cur) => acc[cur], ctrl);
+}
+window.path = ctrl_path;

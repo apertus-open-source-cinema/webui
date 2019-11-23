@@ -97,17 +97,16 @@ function Column(props) {
     }
 
     if (Array.isArray(entries)) {
-        return <ListColumn {...props}/>
+        return <ListColumn entries={entries} {...props}/>
     } else {
         return <></>;
     }
 }
 
 function ListColumn(props) {
-    const {ctrl} = props;
+    const {ctrl, entries} = props;
     const classes = useStyles();
 
-    const entries = usePromise(ctrl.then(Object.keys));
     if (entries === undefined) {
         return <></>
     }

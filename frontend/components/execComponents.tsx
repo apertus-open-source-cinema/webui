@@ -1,7 +1,5 @@
 import {default as React, useEffect, useState} from "react";
 import {exec} from "../util/exec";
-import {ctrl} from "../util/ctrl";
-import {usePromise} from "../util/usePromise";
 
 export function PlainCommand(props) {
     const {command, interval} = props;
