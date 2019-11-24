@@ -65,24 +65,15 @@ export async function cat(path) {
 }
 window.cat = cat;
 
-let path_cache = new Map();
 export async function get_path(path) {
   const striped_path = path.replace(/\/$/, '');
-  if (!path_cache.has(striped_path)) {
-    path_cache.set(
-      striped_path,
-      (async () => {
-        const type = await get_type(striped_path);
-        if (type === 'd') {
-          return await ls(striped_path);
-        } else if (type === 'f') {
-          return await cat(striped_path);
-        }
-        throw new Error(`cant handle ${path} with type ${type}`);
-      })()
-    );
+  const type = await get_type(striped_path);
+  if (type === 'd') {
+    return await ls(striped_path);
+  } else if (type === 'f') {
+    return await cat(striped_path);
   }
-  return path_cache.get(striped_path);
+  throw new Error(`cant handle ${path} with type ${type}`);
 }
 window.get_path = get_path;
 

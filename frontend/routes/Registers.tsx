@@ -7,7 +7,7 @@ import { cat, get_path, set } from '../util/execCommands';
 export const text = 'Register Explorer';
 export const route = '/registers';
 
-const column_width = '280px';
+const column_width = '300px';
 const useStyles = makeStyles(theme => ({
   column_container: {
     display: 'flex',
@@ -224,9 +224,10 @@ function ValueListEntry({ entry }) {
   useEffect(() => {
     get_path(path.replace(/\/[^\/]*$/, '/map'))
       .then(async v => {
-        console.info(v);
         if (Array.isArray(v)) {
           return await Promise.all(v.map(async entry => ({representation: entry.name, value: await cat(entry.path)})));
+        } else {
+          setMap(undefined);
         }
       })
       .then(v => setMap(v));
@@ -237,7 +238,7 @@ function ValueListEntry({ entry }) {
   useEffect(() => setError(undefined), [path]);
   const submit = value => {
     set(path, value)
-      .then(() => get_path(path).then(v => {setValue(v); setFieldValue(v)})
+      .then(() => get_path(path).then(v => {setValue(v); setFieldValue(v)}))
       .catch(error => setError(error));
   };
 
