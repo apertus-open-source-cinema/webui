@@ -41,10 +41,16 @@ const useStyles = makeStyles(theme => ({
     background: 'dodgerblue',
     color: 'white',
   },
-  float_right: {
+  entry_right: {
     fontStyle: 'italic',
     color: '#555',
     float: 'right',
+  },
+  entry_left: {
+    maxWidth: '90%',
+    overflow: 'hidden',
+    display: 'inline-block',
+    textOverflow: 'ellipsis',
   },
   item: {
     display: 'inline-block',
@@ -193,8 +199,8 @@ function NonValueListEntry(props) {
     >
       <div className={classes.item}>
         <Typography>
-          {name}
-          <span className={classes.float_right}>{right}</span>
+          <span className={classes.entry_left}>{name}</span>
+          <span className={classes.entry_right}>{right}</span>
         </Typography>
       </div>
     </li>
@@ -225,7 +231,9 @@ function ValueListEntry({ entry }) {
     get_path(path.replace(/\/[^\/]*$/, '/map'))
       .then(async v => {
         if (Array.isArray(v)) {
-          return await Promise.all(v.map(async entry => ({representation: entry.name, value: await cat(entry.path)})));
+          return await Promise.all(
+            v.map(async entry => ({ representation: entry.name, value: await cat(entry.path) }))
+          );
         } else {
           setMap(undefined);
         }
@@ -238,7 +246,12 @@ function ValueListEntry({ entry }) {
   useEffect(() => setError(undefined), [path]);
   const submit = value => {
     set(path, value)
-      .then(() => get_path(path).then(v => {setValue(v); setFieldValue(v)}))
+      .then(() =>
+        get_path(path).then(v => {
+          setValue(v);
+          setFieldValue(v);
+        })
+      )
       .catch(error => setError(error));
   };
 
@@ -251,7 +264,7 @@ function ValueListEntry({ entry }) {
         value={fieldValue === undefined ? value : fieldValue}
         onChange={event => {
           setFieldValue(event.target.value);
-          if(Array.isArray(map)) submit(event.target.value);
+          if (Array.isArray(map)) submit(event.target.value);
         }}
         onKeyDown={event => {
           if (event.key === 'Enter') submit(fieldValue);
@@ -265,9 +278,9 @@ function ValueListEntry({ entry }) {
         variant="outlined"
       >
         {Array.isArray(map)
-          ? map.map(({value, representation}) => (
+          ? map.map(({ value, representation }) => (
               <MenuItem key={representation} value={value}>
-                {value}    ({representation})
+                {value} ({representation})
               </MenuItem>
             ))
           : ''}
