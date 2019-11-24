@@ -194,7 +194,7 @@ function NonValueListEntry(props) {
   return (
     <li
       key={name}
-      className={classes.li + (active === name + '/' ? ' ' + classes.active : '')}
+      className={classes.li + ((active === name + '/') && type === 'd' ? ' ' + classes.active : '')}
       onClick={() => setActive(name + '/')}
     >
       <div className={classes.item}>
