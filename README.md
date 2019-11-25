@@ -28,15 +28,27 @@ This Feature is not done yet but should be used to configure the camera hotspot 
 Wifi client.
 
 ## Architecture
+Most of the code of the webui is in the frontend. The fronted is written using react & uses many modern
+js/ts features. The bundler used is parcel.
+
+The backend is written in nodejs and is only there to execute shell commands, the frontend sends over a 
+`socketio` connection. Ie. the Register explorer issues a lot of `find` `cat` and `echo` commands and parses
+the results, but the backend has no knowledge of any control daemon. This allows us to have absolutely no
+business logic in the backend.
 
 ## Develop!
-To start developing the webui clone this repository and start a development server:
+To start developing the webui clone this repository and install the dependencies:
 ```bash
 git clone https://github.com/axiom-micro/webui
 cd webui
 yarn install
+```
+
+Now you need to start *ctrl* and adjust the symlink `ctrl_mountpoint` to point to the mountpoint of ctrl. 
+A development server that listens on port 3000 can be started with:
+```
 yarn watch
 ```
 
 Then open a browser and see the webui :). 
-If you 
+If you open a pr, please format your code with `yarn format` before.
