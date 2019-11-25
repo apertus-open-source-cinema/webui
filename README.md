@@ -1,13 +1,13 @@
 # AXIOM webui
 A web based user interface to control AXIOM cameras.
-To be used in connection with [ctrl](https://github.com/axiom-micro/ctrl), the central hardware 
+To be used in connection with [nctrl](https://github.com/axiom-micro/nctrl), the central hardware 
 abstraction layer for AXIOM cameras.
 
 ## Features
 The webui already has some working features, many WIP features and some planed features:
 
 ### Register Explorer
-The Register Explorer is a direct mapping of the api provided by [ctrl](https://github.com/axiom-micro/ctrl).
+The Register Explorer is a direct mapping of the api provided by [nctrl](https://github.com/axiom-micro/nctrl).
 It is quite useful to experiment with registers of all the camera parts (eg. the image sensor) during development
 or for fun :)
 
@@ -44,7 +44,7 @@ cd webui
 yarn install
 ```
 
-Now you need to start *ctrl* and adjust the symlink `ctrl_mountpoint` to point to the mountpoint of ctrl. 
+Now you need to start *nctrl* and adjust the symlink `ctrl_mountpoint` to point to the mountpoint of nctrl. 
 A development server that listens on port 3000 can be started with:
 ```
 yarn watch
