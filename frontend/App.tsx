@@ -1,12 +1,20 @@
 import * as React from 'react';
 // @ts-ignore
 import routes from './routes/*.tsx';
-import { Drawer, ListItemIcon, ListItemText, ListItem, makeStyles } from '@material-ui/core';
+import {
+  Drawer,
+  ListItemIcon,
+  ListItemText,
+  ListItem,
+  makeStyles,
+  createMuiTheme,
+} from '@material-ui/core';
 import List from '@material-ui/core/List';
 import { Link as RouterLink, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
+import { green, purple } from '@material-ui/core/colors';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
