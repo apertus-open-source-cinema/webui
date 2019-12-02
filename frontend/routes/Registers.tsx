@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const BASE_PATH = './ctrl_mountpoint/';
+const BASE_PATH = './nctrl_mountpoint/';
 
 export function Component(props) {
   const classes = useStyles();

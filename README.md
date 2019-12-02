@@ -44,7 +44,7 @@ cd webui
 yarn install
 ```
 
-Now you need to start *nctrl* and adjust the symlink `ctrl_mountpoint` to point to the mountpoint of nctrl. 
+Now you need to start *nctrl* and adjust the symlink `nctrl_mountpoint` to point to the mountpoint of nctrl. 
 A development server that listens on port 3000 can be started with:
 ```
 yarn watch
