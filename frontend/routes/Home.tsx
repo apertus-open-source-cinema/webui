@@ -86,7 +86,7 @@ export function Component(props) {
               />
             </pre>
             <Typography>
-              The <b>password</b> is <i>axiom</i>.
+              The <b>default password</b> is <i>axiom</i>.
             </Typography>
           </HomeCard>
 
