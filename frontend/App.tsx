@@ -7,7 +7,7 @@ import {
   ListItemText,
   ListItem,
   makeStyles,
-  createMuiTheme, IconButton,
+  IconButton,
 } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import { Link as RouterLink, Switch, Route } from 'react-router-dom';
@@ -21,6 +21,9 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    backgroundColor: theme.palette.background.default,
+    width: '100vw',
+    height: '100vh',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -83,9 +86,9 @@ export function App(props: any) {
           <Typography variant="h6" noWrap>
             AXIOM WebUi -&nbsp;
             <Switch>
-              {Object.values(routes).map(({ route, text }: any) => (
+              {Object.values(routes).map(({ route, title }: any) => (
                 <Route exact path={route} key={route}>
-                  {text}
+                  {title}
                 </Route>
               ))}
             </Switch>
@@ -102,8 +105,8 @@ export function App(props: any) {
       >
         <div className={classes.toolbar} />
         <List>
-          {Object.values(routes).map(({ route, text, position }: any) => (
-            <ListItemLink to={route} primary={text} key={route} position={position || 100} />
+          {Object.values(routes).map(({ route, title, position }: any) => (
+            <ListItemLink to={route} primary={title} key={route} position={position || 100} />
           ))}
         </List>
       </Drawer>

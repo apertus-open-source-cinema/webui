@@ -14,8 +14,13 @@ import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
 import { NonValueListEntry, ValueListEntry } from './Registers';
 
-export const text = 'Dashboard';
+export const title = 'Dashboard';
 export const route = '/dashboard';
+export const explanation =
+  `**[WIP] - not ready to be used**
+    
+  The dashboard allows you to control parameters of the camera in a convenient and 
+  **set-compatible** way. Here you can set the ISO, exposure time and related parameters.`;
 
 const useStyles = makeStyles(theme => ({
   add: {

@@ -4,8 +4,15 @@ import { makeStyles, MenuItem, TextField, Typography, withStyles } from '@materi
 import { usePath } from '../util/usePath';
 import { cat, get_path, set } from '../util/execCommands';
 
-export const text = 'Register Explorer';
+export const title = 'Register Explorer';
 export const route = '/registers';
+export const explanation =
+  `The register explorer allows you to comunicate directly with the
+  registers of the peripherals (i.e. the image sensor) of the camera.
+  just navigate the displayed tree (by clicking on items with a '>' sign)
+  and change the values of all the registers you like.
+  
+  Especially usefull for development and experimenting, **not so much for production use**.`;
 
 const column_width = '300px';
 const useStyles = makeStyles(theme => ({
@@ -26,6 +33,7 @@ const useStyles = makeStyles(theme => ({
     borderRight: '1px solid lightgray',
     flexShrink: 0,
     padding: 0,
+    backgroundColor: theme.palette.background.paper,
   },
   ul: {
     listStyle: 'none',

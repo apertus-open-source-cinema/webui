@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { exec_table, exec } from '../util/exec';
-import { useEffect, useState } from 'react';
 
-export const text = 'Wifi Configuration';
+export const title = 'Wifi Configuration';
 export const route = '/wifi';
 
 export class Component extends React.Component<{}, any> {
