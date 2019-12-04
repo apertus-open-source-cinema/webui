@@ -7,11 +7,12 @@ import {
   Container,
   Grid,
   makeStyles,
-  Typography, withStyles,
+  Typography,
+  withStyles,
 } from '@material-ui/core';
 import { Link, Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'markdown-to-jsx';
-import {routes} from '../*/*.tsx';
+import { routes } from '../*/*.tsx';
 import { PlainCommand } from './SystemInformation';
 
 export const title = 'Home';
@@ -56,7 +57,8 @@ export function Component(props) {
       <div className={classes.heroContent}>
         <Container maxWidth="sm">
           <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-            AXIOM <br/>WebUI
+            AXIOM <br />
+            WebUI
           </Typography>
           <Typography variant="h5" align="center" color="textSecondary" paragraph>
             Control and experiment with your AXIOM camera with fun & ease.
@@ -67,15 +69,21 @@ export function Component(props) {
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
           <HomeCard title={'Connect via SSH'} raw>
-            <Typography>
-              Connect to the camera via ssh to get a normal linux shell.
-            </Typography>
+            <Typography>Connect to the camera via ssh to get a normal linux shell.</Typography>
             <pre>
-              $ ssh operator@<PlainCommand command={`ip -4 addr show wlan0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'  `} interval={10000}/>
+              $ ssh operator@
+              <PlainCommand
+                command={`ip -4 addr show wlan0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'  `}
+                interval={10000}
+              />
             </pre>
             or
             <pre>
-              $ ssh operator@<PlainCommand command={`ip -4 addr show eth0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'  `} interval={10000}/>
+              $ ssh operator@
+              <PlainCommand
+                command={`ip -4 addr show eth0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'  `}
+                interval={10000}
+              />
             </pre>
             <Typography>
               The <b>password</b> is <i>axiom</i>.
@@ -83,16 +91,19 @@ export function Component(props) {
           </HomeCard>
 
           {Object.values(routes)
-            .filter(({explanation}) => explanation)
-            .map(({explanation, route, title}) => (<HomeCard key={route} title={title} route={route}>{explanation}</HomeCard>)}
+            .filter(({ explanation }) => explanation)
+            .map(({ explanation, route, title }) => (
+              <HomeCard key={route} title={title} route={route}>
+                {explanation}
+              </HomeCard>
+            ))}
         </Grid>
       </Container>
     </div>
   );
 }
 
-
-function HomeCard({title, route, children, raw}) {
+function HomeCard({ title, route, children, raw }) {
   const classes = useStyles();
 
   const link = React.forwardRef((props, ref) => (
@@ -105,8 +116,9 @@ function HomeCard({title, route, children, raw}) {
         open {title}
       </Button>
     </CardActions>
-  ) : <></>;
-
+  ) : (
+    <></>
+  );
 
   const reactMarkdownOptions = {
     overrides: {
@@ -130,7 +142,7 @@ function HomeCard({title, route, children, raw}) {
           listItem: {
             marginTop: theme.spacing(1),
           },
-        })(({ classes, ...props }) => (
+        }))(({ classes, ...props }) => (
           <li className={classes.listItem}>
             <Typography component="span" {...props} />
           </li>
@@ -138,23 +150,29 @@ function HomeCard({title, route, children, raw}) {
       },
       code: {
         component: CodeComponent,
-      }
+      },
     },
   };
 
-  return <Grid item xs={12} sm={8} md={6}>
-    <Card className={classes.card}>
-      <CardContent className={classes.cardContent}>
-        <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle}>
-          {title}
-        </Typography>
-        {raw ? children : <ReactMarkdown options={reactMarkdownOptions}>{children}</ReactMarkdown>}
-      </CardContent>
-      {actions}
-    </Card>
-  </Grid>;
+  return (
+    <Grid item xs={12} sm={8} md={6}>
+      <Card className={classes.card}>
+        <CardContent className={classes.cardContent}>
+          <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle}>
+            {title}
+          </Typography>
+          {raw ? (
+            children
+          ) : (
+            <ReactMarkdown options={reactMarkdownOptions}>{children}</ReactMarkdown>
+          )}
+        </CardContent>
+        {actions}
+      </Card>
+    </Grid>
+  );
 }
 
-function CodeComponent({children}) {
-  return <pre>{children}</pre>
+function CodeComponent({ children }) {
+  return <pre>{children}</pre>;
 }

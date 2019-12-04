@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
     '& ul': {
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     },
   },
   content: {
@@ -58,7 +58,7 @@ function ListItemLink(props) {
   );
 
   return (
-    <li style={{order: position}}>
+    <li style={{ order: position }}>
       <ListItem button component={renderLink}>
         {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
         <ListItemText primary={primary} />

@@ -6,8 +6,7 @@ import { cat, get_path, set } from '../util/execCommands';
 
 export const title = 'Register Explorer';
 export const route = '/registers';
-export const explanation =
-  `The register explorer allows you to comunicate directly with the
+export const explanation = `The register explorer allows you to comunicate directly with the
   registers of the peripherals (i.e. the image sensor) of the camera.
   just navigate the displayed tree (by clicking on items with a '>' sign)
   and change the values of all the registers you like.
@@ -102,7 +101,7 @@ export function Component(props) {
       path={active.slice(0, i + 1).reduce((a, b) => a + b)}
       setActive={x => {
         if (x === undefined) {
-          setActive(active.slice(0, i + 1))
+          setActive(active.slice(0, i + 1));
         } else {
           setActive([...active.slice(0, i + 1), x]);
         }
@@ -126,7 +125,7 @@ function Column(props) {
   useEffect(scrollFn, [entries]);
 
   if (entries === undefined) {
-    return <ListColumn entries={[]} {...props}/>;
+    return <ListColumn entries={[]} {...props} />;
   } else if (typeof entries === 'string') {
     return <></>;
   } else {
@@ -188,7 +187,7 @@ function isValue(x) {
 
 export function FileContent({ path }) {
   const value = usePath(path);
-  return <FutureValue value={value} error={'not readable'}/>;
+  return <FutureValue value={value} error={'not readable'} />;
 }
 
 export function FutureValue({ value, error }) {
@@ -208,7 +207,7 @@ function NonValueListEntry(props) {
 
   let right: any = 'x';
   if (type === 'f') {
-    right = <FileContent path={path + name}/>;
+    right = <FileContent path={path + name} />;
   } else if (type === 'd') {
     right = '>';
   }
@@ -219,7 +218,7 @@ function NonValueListEntry(props) {
       className={classes.li + (active === name + '/' && type === 'd' ? ' ' + classes.active : '')}
       onPointerDown={e => {
         if (type === 'd') {
-          setActive(name + '/')
+          setActive(name + '/');
           e.stopPropagation();
         }
       }}
@@ -259,7 +258,7 @@ export function ValueListEntry({ entry }) {
       .then(async v => {
         if (Array.isArray(v)) {
           return await Promise.all(
-            v.map(async entry => ({ representation: entry.name, value: await cat(entry.path) })),
+            v.map(async entry => ({ representation: entry.name, value: await cat(entry.path) }))
           );
         } else {
           setMap(undefined);
@@ -277,7 +276,7 @@ export function ValueListEntry({ entry }) {
         get_path(path).then(v => {
           setValue(v);
           setFieldValue(v);
-        }),
+        })
       )
       .catch(error => setError(error));
   };
@@ -306,10 +305,10 @@ export function ValueListEntry({ entry }) {
       >
         {Array.isArray(map)
           ? map.map(({ value, representation }) => (
-            <MenuItem key={representation} value={value}>
-              {value} ({representation})
-            </MenuItem>
-          ))
+              <MenuItem key={representation} value={value}>
+                {value} ({representation})
+              </MenuItem>
+            ))
           : ''}
       </TextField>
     </li>

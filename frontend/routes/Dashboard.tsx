@@ -7,7 +7,8 @@ import {
   DialogContentText,
   DialogTitle,
   Fab,
-  makeStyles, MenuItem,
+  makeStyles,
+  MenuItem,
   TextField,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -16,8 +17,7 @@ import { NonValueListEntry, ValueListEntry } from './Registers';
 
 export const title = 'Dashboard';
 export const route = '/dashboard';
-export const explanation =
-  `**[WIP] - not ready to be used**
+export const explanation = `**[WIP] - not ready to be used**
     
   The dashboard allows you to control parameters of the camera in a convenient and 
   **set-compatible** way. Here you can set the ISO, exposure time and related parameters.`;
@@ -36,34 +36,26 @@ export function Component(props) {
 
   const [widgets, setWidgets] = useState([]);
 
-  return (
-    <div>
-      {<AddComponents/>}
-    </div>
-  );
+  return <div>{<AddComponents />}</div>;
 }
-
 
 const input_methods = {
   textfield: {
-    component({path}) {
-
-      return <ValueListEntry entry={{path, type: 'f', name: path.match(/\/([^\/]*)?$/)[1]}}/>
-    }
+    component({ path }) {
+      return <ValueListEntry entry={{ path, type: 'f', name: path.match(/\/([^\/]*)?$/)[1] }} />;
+    },
   },
   slider: {
     params: {
       min: 'float',
       max: 'float',
-      integer: 'bool'
+      integer: 'bool',
     },
-    component({path}) {
-
-    }
-  }
+    component({ path }) {},
+  },
 };
 
-function AddComponents({callback}) {
+function AddComponents({ callback }) {
   const classes = useStyles();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -85,7 +77,11 @@ function AddComponents({callback}) {
           </DialogContentText>
           <TextField autoFocus margin="dense" label="Path" fullWidth />
           <TextField margin="dense" label="Input Type" select fullWidth>
-            {Object.keys(input_methods).map(name => <MenuItem key={name} value={name}>{name}</MenuItem>)}
+            {Object.keys(input_methods).map(name => (
+              <MenuItem key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
           </TextField>
         </DialogContent>
         <DialogActions>
