@@ -7,14 +7,15 @@ import {
   ListItemText,
   ListItem,
   makeStyles,
-  createMuiTheme,
+  createMuiTheme, IconButton,
 } from '@material-ui/core';
 import List from '@material-ui/core/List';
-import { Link as RouterLink, BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Link as RouterLink, Switch, Route } from 'react-router-dom';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import { green, purple } from '@material-ui/core/colors';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -30,6 +31,10 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    '& ul': {
+      display: 'flex',
+      flexDirection: 'column'
+    },
   },
   content: {
     flexGrow: 1,
@@ -39,7 +44,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function ListItemLink(props) {
-  const { icon, primary, to } = props;
+  const { icon, primary, to, position } = props;
 
   const renderLink: any = React.useMemo(
     () =>
@@ -50,7 +55,7 @@ function ListItemLink(props) {
   );
 
   return (
-    <li>
+    <li style={{order: position}}>
       <ListItem button component={renderLink}>
         {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
         <ListItemText primary={primary} />
@@ -65,6 +70,16 @@ export function App(props: any) {
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={() => {}}
+            className={classes.menuButton}
+          >
+            <MenuIcon />
+          </IconButton>
+
           <Typography variant="h6" noWrap>
             AXIOM WebUi -&nbsp;
             <Switch>
@@ -87,8 +102,8 @@ export function App(props: any) {
       >
         <div className={classes.toolbar} />
         <List>
-          {Object.values(routes).map(({ route, text }: any) => (
-            <ListItemLink to={route} primary={text} key={route} />
+          {Object.values(routes).map(({ route, text, position }: any) => (
+            <ListItemLink to={route} primary={text} key={route} position={position || 100} />
           ))}
         </List>
       </Drawer>

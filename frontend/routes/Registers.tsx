@@ -93,7 +93,11 @@ export function Component(props) {
       key={i}
       path={active.slice(0, i + 1).reduce((a, b) => a + b)}
       setActive={x => {
-        setActive([...active.slice(0, i + 1), x]);
+        if (x === undefined) {
+          setActive(active.slice(0, i + 1))
+        } else {
+          setActive([...active.slice(0, i + 1), x]);
+        }
       }}
       active={active[i + 1]}
       scrollFn={scroll_fn}
@@ -113,7 +117,9 @@ function Column(props) {
   let entries = usePath(path);
   useEffect(scrollFn, [entries]);
 
-  if (entries === undefined || typeof entries === 'string') {
+  if (entries === undefined) {
+    return <ListColumn entries={[]} {...props}/>;
+  } else if (typeof entries === 'string') {
     return <></>;
   } else {
     return <ListColumn entries={entries} {...props} />;
@@ -121,7 +127,7 @@ function Column(props) {
 }
 
 function ListColumn(props) {
-  const { entries } = props;
+  const { entries, setActive } = props;
   const classes = useStyles();
 
   const directories = entries.filter(x => x.type === 'd');
@@ -129,7 +135,7 @@ function ListColumn(props) {
   const values = entries.filter(x => x.type === 'f' && isValue(x));
 
   return (
-    <div className={classes.column}>
+    <div className={classes.column} onPointerDown={() => setActive(undefined)}>
       <List children={values} {...props} />
       <List children={information} {...props} />
       <List children={directories} {...props} />
@@ -174,9 +180,17 @@ function isValue(x) {
 
 export function FileContent({ path }) {
   const value = usePath(path);
-  return (
-    <>{typeof value === 'string' ? value : <span style={{ color: 'red' }}>not readable</span>}</>
-  );
+  return <FutureValue value={value} error={'not readable'}/>;
+}
+
+export function FutureValue({ value, error }) {
+  if (value === null) {
+    return <span style={{ color: 'red' }}>{error}</span>;
+  } else if (typeof value === 'string') {
+    return value;
+  } else {
+    return <></>;
+  }
 }
 
 function NonValueListEntry(props) {
@@ -186,7 +200,7 @@ function NonValueListEntry(props) {
 
   let right: any = 'x';
   if (type === 'f') {
-    right = <FileContent path={path + name} />;
+    right = <FileContent path={path + name}/>;
   } else if (type === 'd') {
     right = '>';
   }
@@ -195,7 +209,12 @@ function NonValueListEntry(props) {
     <li
       key={name}
       className={classes.li + (active === name + '/' && type === 'd' ? ' ' + classes.active : '')}
-      onClick={() => setActive(name + '/')}
+      onPointerDown={e => {
+        if (type === 'd') {
+          setActive(name + '/')
+          e.stopPropagation();
+        }
+      }}
     >
       <div className={classes.item}>
         <Typography>
@@ -232,7 +251,7 @@ export function ValueListEntry({ entry }) {
       .then(async v => {
         if (Array.isArray(v)) {
           return await Promise.all(
-            v.map(async entry => ({ representation: entry.name, value: await cat(entry.path) }))
+            v.map(async entry => ({ representation: entry.name, value: await cat(entry.path) })),
           );
         } else {
           setMap(undefined);
@@ -250,7 +269,7 @@ export function ValueListEntry({ entry }) {
         get_path(path).then(v => {
           setValue(v);
           setFieldValue(v);
-        })
+        }),
       )
       .catch(error => setError(error));
   };
@@ -279,10 +298,10 @@ export function ValueListEntry({ entry }) {
       >
         {Array.isArray(map)
           ? map.map(({ value, representation }) => (
-              <MenuItem key={representation} value={value}>
-                {value} ({representation})
-              </MenuItem>
-            ))
+            <MenuItem key={representation} value={value}>
+              {value} ({representation})
+            </MenuItem>
+          ))
           : ''}
       </TextField>
     </li>
