@@ -18,7 +18,8 @@ import { NctrlValue } from '../util/nctrlValue';
 import { Fs } from '../util/fs';
 import { usePromiseGenerator } from '../util/usePromiseGenerator';
 import { NCTRL_BASE_PATH } from '../util/nctrl';
-import { NctrlValueTextfield } from '../components/NctrlValueEdit';
+import { NctrlValueSlider, NctrlValueTextfield } from '../components/NctrlValueEdit';
+import Typography from '@material-ui/core/Typography';
 
 export const title = 'Dashboard';
 export const route = '/dashboard';
@@ -41,9 +42,10 @@ const useStyles = makeStyles(theme => ({
     padding: 0,
   },
   notWide: {
-    maxWidth: 600,
+    maxWidth: 750,
     padding: 3,
     margin: '10px auto',
+    marginBottom: '20px',
   },
 }));
 
@@ -54,13 +56,11 @@ export function Component(props) {
   const file_yml = usePromiseGenerator(() => Fs.of(YAML_PATH).load(), YAML_PATH);
   useEffect(() => {
     if (yaml === null && file_yml !== undefined) {
-      console.log(file_yml);
       setYaml(file_yml);
     }
   }, [file_yml]);
 
   const parsed = useYaml(yaml) || [];
-  console.log(parsed);
 
   return (
     <div>
@@ -76,7 +76,14 @@ export function Component(props) {
       <ul className={classes.ul}>
         {parsed.map((x, i) => {
           const InputComponent = input_methods[x.input];
-          return <InputComponent {...x} key={i} />;
+          return (
+            <div className={classes.notWide}>
+            <Typography variant="h6">{Fs.of(x.path).name()}:</Typography>
+            <Paper key={i}>
+              <InputComponent {...x} />
+            </Paper>
+            </div>
+          );
         })}
       </ul>
     </div>
@@ -89,15 +96,21 @@ const input_methods = {
     const nctrlValue = NctrlValue.of(`${NCTRL_BASE_PATH}/${path}`);
 
     return (
-      <Paper className={classes.notWide}>
         <NctrlValueTextfield
           nctrlValue={nctrlValue}
         />
-      </Paper>
     );
   },
-  slider({ path }) {
-    new NctrlValue(path);
+  slider({ path, options }) {
+    const classes = useStyles();
+    const nctrlValue = NctrlValue.of(`${NCTRL_BASE_PATH}/${path}`);
+
+    return (
+        <NctrlValueSlider
+          nctrlValue={nctrlValue}
+          options={options}
+        />
+    );
   },
 };
 

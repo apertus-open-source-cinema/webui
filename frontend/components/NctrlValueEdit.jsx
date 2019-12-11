@@ -1,6 +1,7 @@
 import { default as React, useEffect, useState } from 'react';
 import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 import { usePromiseGenerator, usePromiseGeneratorRefreshable } from '../util/usePromiseGenerator';
+import Slider from '@material-ui/core/Slider';
 
 const useStyles = makeStyles(theme => ({
   input: {
@@ -24,12 +25,15 @@ const useStyles = makeStyles(theme => ({
       borderWidth: 2,
     },
   },
+  sliderBox: {
+    padding: '50px 15px 10px',
+    boxSizing: 'border-box',
+  }
 }));
 
 export function NctrlValueTextfield({ nctrlValue }) {
   const classes = useStyles();
 
-  // an inlined version of the usePath hook to be able to refresh the file contents after writing
   const [value, refreshValue] = usePromiseGeneratorRefreshable(
     () => nctrlValue.value(),
     nctrlValue,
@@ -88,5 +92,39 @@ export function NctrlValueTextfield({ nctrlValue }) {
           ))
         : ''}
     </TextField>
+  );
+}
+
+export function NctrlValueSlider({ nctrlValue, options }) {
+  const classes = useStyles();
+
+  const [value, refreshValue] = usePromiseGeneratorRefreshable(
+    () => nctrlValue.value(),
+    nctrlValue,
+    null
+  );
+
+  const marks = Object.keys(options).map(key => ({value: parseFloat(key), label: options[key]}));
+
+  const value_next_marking = marks
+    .map(x => x.value)
+    .map(x => ({dif: Math.abs(x - value), val: x}))
+    .reduce((acc, curr) => curr.dif < acc.dif ? curr : acc, {dif: Infinity})
+    .val;
+
+  return (
+    <div className={classes.sliderBox}>
+      <Slider
+        value={value_next_marking}
+        onChange={(e, value) => nctrlValue.setValue(value).then(() => refreshValue()).catch(e => console.error(e))}
+        aria-labelledby="discrete-slider-restrict"
+        getAriaLabel={i => marks[i].label}
+        step={null}
+        marks={marks}
+        valueLabelDisplay="on"
+        min={Math.min(...marks.map(x => x.value))}
+        max={Math.max(...marks.map(x => x.value))}
+      />
+    </div>
   );
 }
