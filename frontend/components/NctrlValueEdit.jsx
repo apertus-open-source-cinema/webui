@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   sliderBox: {
     padding: '50px 15px 10px',
     boxSizing: 'border-box',
-  }
+  },
 }));
 
 export function NctrlValueTextfield({ nctrlValue }) {
@@ -45,8 +45,7 @@ export function NctrlValueTextfield({ nctrlValue }) {
   useEffect(() => setFieldValue(undefined), [nctrlValue]);
   const is_changed = fieldValue !== undefined && fieldValue !== value;
 
-  const writable =
-    usePromiseGenerator(() => nctrlValue.isWritable(), nctrlValue) !== 'false';
+  const writable = usePromiseGenerator(() => nctrlValue.isWritable(), nctrlValue) !== 'false';
 
   const map = usePromiseGenerator(() => nctrlValue.getMap(), nctrlValue);
 
@@ -104,19 +103,23 @@ export function NctrlValueSlider({ nctrlValue, options }) {
     null
   );
 
-  const marks = Object.keys(options).map(key => ({value: parseFloat(key), label: options[key]}));
+  const marks = Object.keys(options).map(key => ({ value: parseFloat(key), label: options[key] }));
 
   const value_next_marking = marks
     .map(x => x.value)
-    .map(x => ({dif: Math.abs(x - value), val: x}))
-    .reduce((acc, curr) => curr.dif < acc.dif ? curr : acc, {dif: Infinity})
-    .val;
+    .map(x => ({ dif: Math.abs(x - value), val: x }))
+    .reduce((acc, curr) => (curr.dif < acc.dif ? curr : acc), { dif: Infinity }).val;
 
   return (
     <div className={classes.sliderBox}>
       <Slider
         value={value_next_marking}
-        onChange={(e, value) => nctrlValue.setValue(value).then(() => refreshValue()).catch(e => console.error(e))}
+        onChange={(e, value) =>
+          nctrlValue
+            .setValue(value)
+            .then(() => refreshValue())
+            .catch(e => console.error(e))
+        }
         aria-labelledby="discrete-slider-restrict"
         getAriaLabel={i => marks[i].label}
         step={null}

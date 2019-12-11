@@ -150,7 +150,9 @@ function List(props) {
         {children.map(x => {
           if (isValue(x)) {
             return (
-              <li key={x.name()}><NctrlValueTextfield key={x.name()} nctrlValue={NctrlValue.of(x.path)} {...props} /></li>
+              <li key={x.name()}>
+                <NctrlValueTextfield key={x.name()} nctrlValue={NctrlValue.of(x.path)} {...props} />
+              </li>
             );
           } else {
             return <NonValueListEntry key={x.name()} entry={x} {...props} />;

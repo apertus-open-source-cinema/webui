@@ -60,8 +60,8 @@ export function usePromiseGeneratorRefreshable(pg, dependencies, startValue) {
 
   const promiseVal = usePromiseGenerator(pg, { ...dependencies, refreshTimes });
   useEffect(() => {
-    if(promiseVal !== undefined){
-      setLastValue(promiseVal)
+    if (promiseVal !== undefined) {
+      setLastValue(promiseVal);
     }
   }, [promiseVal]);
   return [promiseVal !== undefined ? promiseVal : lastValue, refresh];

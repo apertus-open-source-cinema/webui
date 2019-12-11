@@ -23,8 +23,7 @@ import Typography from '@material-ui/core/Typography';
 
 export const title = 'Dashboard';
 export const route = '/dashboard';
-export const explanation = `**[WIP] - not ready to be used**
-    
+export const explanation = `
   The dashboard allows you to control parameters of the camera in a convenient and 
   **set-compatible** way. Here you can set the ISO, exposure time and related parameters.`;
 
@@ -78,10 +77,10 @@ export function Component(props) {
           const InputComponent = input_methods[x.input];
           return (
             <div className={classes.notWide}>
-            <Typography variant="h6">{Fs.of(x.path).name()}:</Typography>
-            <Paper key={i}>
-              <InputComponent {...x} />
-            </Paper>
+              <Typography variant="h6">{Fs.of(x.path).name()}:</Typography>
+              <Paper key={i}>
+                <InputComponent {...x} />
+              </Paper>
             </div>
           );
         })}
@@ -95,22 +94,13 @@ const input_methods = {
     const classes = useStyles();
     const nctrlValue = NctrlValue.of(`${NCTRL_BASE_PATH}/${path}`);
 
-    return (
-        <NctrlValueTextfield
-          nctrlValue={nctrlValue}
-        />
-    );
+    return <NctrlValueTextfield nctrlValue={nctrlValue} />;
   },
   slider({ path, options }) {
     const classes = useStyles();
     const nctrlValue = NctrlValue.of(`${NCTRL_BASE_PATH}/${path}`);
 
-    return (
-        <NctrlValueSlider
-          nctrlValue={nctrlValue}
-          options={options}
-        />
-    );
+    return <NctrlValueSlider nctrlValue={nctrlValue} options={options} />;
   },
 };
 
