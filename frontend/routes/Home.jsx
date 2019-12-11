@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import { Link, Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'markdown-to-jsx';
-import { routes } from '../*/*.tsx';
+import { routes } from '../*/*.jsx';
 import { PlainCommand } from './SystemInformation';
 
 export const title = 'Home';

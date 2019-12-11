@@ -4,7 +4,7 @@ import { exec_table, exec } from '../util/exec';
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
 
-export class Component extends React.Component<{}, any> {
+export class Component extends React.Component {
   constructor(props) {
     super(props);
 
@@ -40,9 +40,9 @@ function Table(props) {
         </tr>
       </thead>
       <tbody>
-        {data.map((row: any, i) => (
+        {data.map((row, i) => (
           <tr key={i}>
-            {Object.values(row).map((s: any, i: number) => (
+            {Object.values(row).map((s, i) => (
               <td key={i}>{s}</td>
             ))}
           </tr>

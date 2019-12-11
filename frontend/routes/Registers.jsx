@@ -1,8 +1,12 @@
 import * as React from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { makeStyles, MenuItem, TextField, Typography, withStyles } from '@material-ui/core';
-import { usePath } from '../util/usePath';
-import { cat, get_path, set } from '../util/execCommands';
+import { useEffect, useRef, useState } from 'react';
+import { makeStyles, Typography } from '@material-ui/core';
+import { NCTRL_BASE_PATH } from '../util/nctrl';
+import { Fs } from '../util/fs';
+import { usePromiseGenerator } from '../util/usePromiseGenerator';
+import { FileContent } from '../components/FileContent';
+import { NctrlValueTextfield } from '../components/NctrlValueEdit';
+import { NctrlValue } from '../util/nctrlValue';
 
 export const title = 'Register Explorer';
 export const route = '/registers';
@@ -63,25 +67,7 @@ const useStyles = makeStyles(theme => ({
     display: 'inline-block',
     width: '100%',
   },
-  input: {
-    width: '100%',
-    borderColor: 'green',
-  },
-  changed: {
-    '& fieldset': {
-      borderColor: '#fcba03 !important',
-      borderWidth: 2,
-    },
-  },
-  error: {
-    '& fieldset': {
-      borderColor: 'red !important',
-      borderWidth: 2,
-    },
-  },
 }));
-
-const BASE_PATH = './nctrl_mountpoint/';
 
 export function Component(props) {
   const classes = useStyles();
@@ -89,12 +75,11 @@ export function Component(props) {
   const ref = useRef();
   const scroll_fn = () => {
     if (ref.current !== undefined) {
-      // @ts-ignore
       ref.current.scrollLeft = 10e10;
     }
   };
 
-  const [active, setActive] = useState([BASE_PATH]);
+  const [active, setActive] = useState([NCTRL_BASE_PATH]);
   const columns = active.map((x, i) => (
     <Column
       key={i}
@@ -121,7 +106,7 @@ export function Component(props) {
 function Column(props) {
   const { path, scrollFn } = props;
 
-  let entries = usePath(path);
+  let entries = usePromiseGenerator(() => Fs.of(path).ls(), path);
   useEffect(scrollFn, [entries]);
 
   if (entries === undefined) {
@@ -137,9 +122,9 @@ function ListColumn(props) {
   const { entries, setActive } = props;
   const classes = useStyles();
 
-  const directories = entries.filter(x => x.type === 'd');
-  const information = entries.filter(x => x.type === 'f' && !isValue(x));
-  const values = entries.filter(x => x.type === 'f' && isValue(x));
+  const directories = entries.filter(x => x.type() === 'd');
+  const information = entries.filter(x => x.type() === 'f' && !isValue(x));
+  const values = entries.filter(x => x.type() === 'f' && isValue(x));
 
   return (
     <div className={classes.column} onPointerDown={() => setActive(undefined)}>
@@ -164,9 +149,11 @@ function List(props) {
       <ul className={classes.ul}>
         {children.map(x => {
           if (isValue(x)) {
-            return <ValueListEntry key={x.name} entry={x} {...props} />;
+            return (
+              <li key={x.name()}><NctrlValueTextfield key={x.name()} nctrlValue={NctrlValue.of(x.path)} {...props} /></li>
+            );
           } else {
-            return <NonValueListEntry key={x.name} entry={x} {...props} />;
+            return <NonValueListEntry key={x.name()} entry={x} {...props} />;
           }
         })}
       </ul>
@@ -175,37 +162,23 @@ function List(props) {
 }
 
 function isValue(x) {
-  if (x.type !== 'f') {
+  if (x.type() !== 'f') {
     return false;
   }
   if (x.path.match(/scripts\//)) {
     return ['description', 'value'].every(i => i !== x.name);
   } else {
-    return x.name === 'value';
-  }
-}
-
-export function FileContent({ path }) {
-  const value = usePath(path);
-  return <FutureValue value={value} error={'not readable'} />;
-}
-
-export function FutureValue({ value, error }) {
-  if (value === null) {
-    return <span style={{ color: 'red' }}>{error}</span>;
-  } else if (typeof value === 'string') {
-    return value;
-  } else {
-    return <></>;
+    return x.name() === 'value';
   }
 }
 
 function NonValueListEntry(props) {
   const { entry, active, setActive, path } = props;
-  const { type, name } = entry;
+  const type = entry.type();
+  const name = entry.name();
   const classes = useStyles();
 
-  let right: any = 'x';
+  let right = 'x';
   if (type === 'f') {
     right = <FileContent path={path + name} />;
   } else if (type === 'd') {
@@ -229,88 +202,6 @@ function NonValueListEntry(props) {
           <span className={classes.entry_right}>{right}</span>
         </Typography>
       </div>
-    </li>
-  );
-}
-
-export function ValueListEntry({ entry }) {
-  const classes = useStyles();
-  const { path, name } = entry;
-
-  // an inlined version of the usePath hook to be able to refresh the file contents after writing
-  const [value, setValue] = useState('');
-  useEffect(() => {
-    get_path(path).then(v => setValue(v));
-  }, [path]);
-
-  // state for the textfield
-  const [fieldValue, setFieldValue] = useState(undefined as any);
-  useEffect(() => setFieldValue(undefined), [path]);
-  const is_changed = fieldValue !== undefined && fieldValue !== value;
-
-  // determine some properties of the value
-  const writable = usePath(path.replace(/\/[^\/]*$/, '/writable')) !== 'false';
-
-  // another slightly modified version of usePath
-  const [map, setMap] = useState(undefined as any);
-  useEffect(() => {
-    get_path(path.replace(/\/[^\/]*$/, '/map'))
-      .then(async v => {
-        if (Array.isArray(v)) {
-          return await Promise.all(
-            v.map(async entry => ({ representation: entry.name, value: await cat(entry.path) }))
-          );
-        } else {
-          setMap(undefined);
-        }
-      })
-      .then(v => setMap(v));
-  }, [path]);
-
-  // setting values
-  const [error, setError] = useState(undefined as any);
-  useEffect(() => setError(undefined), [path]);
-  const submit = value => {
-    set(path, value)
-      .then(() =>
-        get_path(path).then(v => {
-          setValue(v);
-          setFieldValue(v);
-        })
-      )
-      .catch(error => setError(error));
-  };
-
-  return (
-    <li key={name} className={classes.li}>
-      <TextField
-        label={name}
-        select={Array.isArray(map)}
-        disabled={!writable}
-        value={fieldValue === undefined ? value : fieldValue}
-        onChange={event => {
-          setFieldValue(event.target.value);
-          if (Array.isArray(map)) submit(event.target.value);
-        }}
-        onKeyDown={event => {
-          if (event.key === 'Enter') submit(fieldValue);
-        }}
-        className={
-          classes.input +
-          (is_changed ? ` ${classes.changed}` : '') +
-          (error ? ` ${classes.error}` : '')
-        }
-        margin="dense"
-        variant="outlined"
-      >
-        {Array.isArray(map)
-          ? map.map(({ value, representation }) => (
-              <MenuItem key={representation} value={value}>
-                {value} ({representation})
-              </MenuItem>
-            ))
-          : ''}
-      </TextField>
     </li>
   );
 }

@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node backend/entrypoint",
-    "build": "NODE_ENV=development parcel build frontend/index.html --no-minify",
+    "build": "parcel build frontend/index.html --detailed-report",
     "watch": "NODE_ENV=development parcel watch frontend/index.html &\n yarn start",
-    "format": "prettier --write '{frontend,backend}/**/*.{js,jsx,ts,tsx}'"
+    "format": "prettier --write '{frontend,backend}/**/*.{js,jsx}'"
   },
   "browserslist": [
     "last 10 Firefox versions"
@@ -22,6 +22,7 @@
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "@types/react-router-dom": "^5.1.2",
+    "js-yaml": "^3.13.1",
     "markdown-to-jsx": "^6.10.3",
     "morgan": "~1.9.1",
     "parcel": "^1.12.4",
@@ -32,6 +33,6 @@
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.4",
     "socket.io-client": "^2.3.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.3"
   }
 }

@@ -1,6 +1,5 @@
 import * as React from 'react';
-// @ts-ignore
-import routes from './routes/*.tsx';
+import routes from './routes/*.jsx';
 import {
   Drawer,
   ListItemIcon,
@@ -14,7 +13,6 @@ import { Link as RouterLink, Switch, Route } from 'react-router-dom';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
 const drawerWidth = 240;
@@ -49,11 +47,9 @@ const useStyles = makeStyles(theme => ({
 function ListItemLink(props) {
   const { icon, primary, to, position } = props;
 
-  const renderLink: any = React.useMemo(
+  const renderLink = React.useMemo(
     () =>
-      React.forwardRef((itemProps, ref: any) => (
-        <RouterLink to={to} {...itemProps} innerRef={ref} />
-      )),
+      React.forwardRef((itemProps, ref) => <RouterLink to={to} {...itemProps} innerRef={ref} />),
     [to]
   );
 
@@ -67,7 +63,7 @@ function ListItemLink(props) {
   );
 }
 
-export function App(props: any) {
+export function App(props) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -86,7 +82,7 @@ export function App(props: any) {
           <Typography variant="h6" noWrap>
             AXIOM WebUi -&nbsp;
             <Switch>
-              {Object.values(routes).map(({ route, title }: any) => (
+              {Object.values(routes).map(({ route, title }) => (
                 <Route exact path={route} key={route}>
                   {title}
                 </Route>
@@ -105,7 +101,7 @@ export function App(props: any) {
       >
         <div className={classes.toolbar} />
         <List>
-          {Object.values(routes).map(({ route, title, position }: any) => (
+          {Object.values(routes).map(({ route, title, position }) => (
             <ListItemLink to={route} primary={title} key={route} position={position || 100} />
           ))}
         </List>
@@ -114,7 +110,7 @@ export function App(props: any) {
       <div className={classes.content}>
         <div className={classes.toolbar} />
         <Switch>
-          {Object.values(routes).map(({ route, Component }: any) => (
+          {Object.values(routes).map(({ route, Component }) => (
             <Route exact path={route} key={route} component={Component} />
           ))}
         </Switch>
