@@ -14,12 +14,11 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import { useEffect, useRef, useState } from 'react';
 import { safeLoad } from 'js-yaml';
-import { NctrlValue } from '../util/nctrlValue';
 import { Fs } from '../util/fs';
 import { usePromiseGenerator } from '../util/usePromiseGenerator';
-import { NCTRL_BASE_PATH } from '../util/nctrl';
-import { NctrlValueSlider, NctrlValueTextfield } from '../components/NctrlValueEdit';
+import { NctrlValueWidgets } from '../components/*.jsx';
 import Typography from '@material-ui/core/Typography';
+import { NCTRL_BASE_PATH } from '../util/nctrl';
 
 export const title = 'Dashboard';
 export const route = '/dashboard';
@@ -64,7 +63,7 @@ export function Component(props) {
   return (
     <div>
       {
-        <AddComponents
+        <EditDashboard
           current_yml={yaml}
           setYaml={yaml => {
             setYaml(yaml);
@@ -74,12 +73,12 @@ export function Component(props) {
       }
       <ul className={classes.ul}>
         {parsed.map((x, i) => {
-          const InputComponent = input_methods[x.input];
+          const InputWidget = NctrlValueWidgets[`NctrlValue${x.input.replace(/^(.)/, v => v.toUpperCase())}`];
           return (
-            <div className={classes.notWide}>
-              <Typography variant="h6">{Fs.of(x.path).name()}:</Typography>
-              <Paper key={i}>
-                <InputComponent {...x} />
+            <div className={classes.notWide} key={i}>
+              <Typography variant="h6">{x.name || Fs.of(x.path).name()}:</Typography>
+              <Paper>
+                <InputWidget {...x} path={`${NCTRL_BASE_PATH}${x.path}`}/>
               </Paper>
             </div>
           );
@@ -89,22 +88,7 @@ export function Component(props) {
   );
 }
 
-const input_methods = {
-  textfield({ path }) {
-    const classes = useStyles();
-    const nctrlValue = NctrlValue.of(`${NCTRL_BASE_PATH}/${path}`);
-
-    return <NctrlValueTextfield nctrlValue={nctrlValue} />;
-  },
-  slider({ path, options }) {
-    const classes = useStyles();
-    const nctrlValue = NctrlValue.of(`${NCTRL_BASE_PATH}/${path}`);
-
-    return <NctrlValueSlider nctrlValue={nctrlValue} options={options} />;
-  },
-};
-
-function AddComponents({ current_yml: currentYaml, setYaml }) {
+function EditDashboard({ current_yml: currentYaml, setYaml }) {
   const classes = useStyles();
 
   const [dialogOpen, setDialogOpen] = useState(false);

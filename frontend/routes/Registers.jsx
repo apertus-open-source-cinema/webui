@@ -5,7 +5,7 @@ import { NCTRL_BASE_PATH } from '../util/nctrl';
 import { Fs } from '../util/fs';
 import { usePromiseGenerator } from '../util/usePromiseGenerator';
 import { FileContent } from '../components/FileContent';
-import { NctrlValueTextfield } from '../components/NctrlValueEdit';
+import { NctrlValueTextfield } from '../components/NctrlValueWidgets';
 import { NctrlValue } from '../util/nctrlValue';
 
 export const title = 'Register Explorer';
@@ -151,7 +151,7 @@ function List(props) {
           if (isValue(x)) {
             return (
               <li key={x.name()}>
-                <NctrlValueTextfield key={x.name()} nctrlValue={NctrlValue.of(x.path)} {...props} />
+                <NctrlValueTextfield key={x.name()} path={x.path} {...props} />
               </li>
             );
           } else {

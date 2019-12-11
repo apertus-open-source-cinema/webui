@@ -26,13 +26,15 @@ const useStyles = makeStyles(theme => ({
     },
   },
   sliderBox: {
-    padding: '50px 15px 10px',
+    padding: '50px 20px 10px',
     boxSizing: 'border-box',
   },
 }));
 
-export function NctrlValueTextfield({ nctrlValue }) {
+export function NctrlValueTextfield({ path }) {
   const classes = useStyles();
+
+  const nctrlValue = NctrlValue.of(path);
 
   const [value, refreshValue] = usePromiseGeneratorRefreshable(
     () => nctrlValue.value(),
@@ -94,40 +96,67 @@ export function NctrlValueTextfield({ nctrlValue }) {
   );
 }
 
-export function NctrlValueSlider({ nctrlValue, options }) {
+export function NctrlValueSlider({ path, options, min, max }) {
   const classes = useStyles();
 
+  const nctrlValue = NctrlValue.of(path);
+
   const [value, refreshValue] = usePromiseGeneratorRefreshable(
-    () => nctrlValue.value(),
+    () => nctrlValue.value().then(x => parseFloat(x)),
     nctrlValue,
-    null
+    0.0
   );
 
-  const marks = Object.keys(options).map(key => ({ value: parseFloat(key), label: options[key] }));
+  if (options) {
+    const marks = Object.keys(options).map(key => ({ value: parseFloat(key), label: options[key] }));
 
-  const value_next_marking = marks
-    .map(x => x.value)
-    .map(x => ({ dif: Math.abs(x - value), val: x }))
-    .reduce((acc, curr) => (curr.dif < acc.dif ? curr : acc), { dif: Infinity }).val;
+    const value_next_marking = marks
+      .map(x => x.value)
+      .map(x => ({ dif: Math.abs(x - value), val: x }))
+      .reduce((acc, curr) => (curr.dif < acc.dif ? curr : acc), { dif: Infinity }).val;
 
-  return (
-    <div className={classes.sliderBox}>
-      <Slider
-        value={value_next_marking}
-        onChange={(e, value) =>
-          nctrlValue
-            .setValue(value)
-            .then(() => refreshValue())
-            .catch(e => console.error(e))
-        }
-        aria-labelledby="discrete-slider-restrict"
-        getAriaLabel={i => marks[i].label}
-        step={null}
-        marks={marks}
-        valueLabelDisplay="on"
-        min={Math.min(...marks.map(x => x.value))}
-        max={Math.max(...marks.map(x => x.value))}
-      />
-    </div>
-  );
+    return (
+      <div className={classes.sliderBox}>
+        <Slider
+          value={value_next_marking}
+          onChange={(e, value) =>
+            nctrlValue
+              .setValue(value)
+              .then(() => refreshValue())
+              .catch(e => console.error(e))
+          }
+          aria-labelledby="discrete-slider-restrict"
+          step={null}
+          marks={marks}
+          valueLabelDisplay="on"
+          min={Math.min(...marks.map(x => x.value))}
+          max={Math.max(...marks.map(x => x.value))}
+        />
+      </div>
+    );
+  } else {
+    return (
+      <div className={classes.sliderBox}>
+        <Slider
+          marks={[
+            {value: min, label: min},
+            {value: max, label: max}
+          ]}
+          value={value}
+          onChange={(e, value) =>
+            nctrlValue
+              .setValue(value)
+              .then(() => refreshValue())
+              .catch(e => console.error(e))
+          }
+          valueLabelFormat={x => x.toFixed(2)}
+          aria-labelledby="discrete-slider-always"
+          valueLabelDisplay="on"
+          min={min}
+          max={max}
+          step={0.001}
+        />
+      </div>
+    );
+  }
 }
