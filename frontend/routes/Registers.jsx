@@ -127,7 +127,11 @@ function ListColumn(props) {
   const values = entries.filter(x => x.type() === 'f' && isValue(x));
 
   return (
-    <div className={classes.column} onPointerDown={() => setActive(undefined)}>
+    <div
+      className={classes.column}
+      onMouseDown={() => setActive(undefined)}
+      onClick={() => setActive(undefined)}
+    >
       <List children={values} {...props} />
       <List children={information} {...props} />
       <List children={directories} {...props} />
@@ -187,16 +191,19 @@ function NonValueListEntry(props) {
     right = '>';
   }
 
+  const onClick = e => {
+    if (type === 'd') {
+      setActive(name + '/');
+      e.stopPropagation();
+    }
+  };
+
   return (
     <li
       key={name}
       className={classes.li + (active === name + '/' && type === 'd' ? ' ' + classes.active : '')}
-      onPointerDown={e => {
-        if (type === 'd') {
-          setActive(name + '/');
-          e.stopPropagation();
-        }
-      }}
+      onMouseDown={onClick}
+      onClick={onClick}
     >
       <div className={classes.item}>
         <Typography>
