@@ -12,7 +12,7 @@ export async function fill_wisdom(path, depth) {
   }
 
   const [find_result, err] = await exec(
-    `find -L ${striped_path} -maxdepth ${depth} -printf '%p\\t%y\\n'`
+    `find -L ${striped_path} -maxdepth ${depth} -printf "%p\\t%y\\n"`
   );
   const parsed = find_result.split('\n').map(line => line.split('\t'));
   parsed.forEach(([path, type]) => fs_wisdom.set(path.replace(/\/$/, ''), { type: type }));

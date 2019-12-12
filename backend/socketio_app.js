@@ -4,7 +4,7 @@ function on_connection(connection) {
   connection.on('exec', (comand, callback) => {
     console.log(`executing '${comand}'`);
     // 100Mb buffer size is a LOT!
-    exec(comand, { maxBuffer: 1024 * 1024 * 100 }, callback);
+    exec(`${comand}`, { maxBuffer: 1024 * 1024 * 100 }, callback);
   });
 }
 

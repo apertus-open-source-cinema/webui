@@ -101,11 +101,31 @@ export function NctrlValueSlider({ path, options, min, max }) {
 
   const nctrlValue = NctrlValue.of(path);
 
-  const [value, refreshValue] = usePromiseGeneratorRefreshable(
-    () => nctrlValue.value().then(x => parseFloat(x)),
-    nctrlValue,
-    0.0
-  );
+  const [value, setValue] = useState(0.0);
+  useEffect(() => {
+    nctrlValue.value().then(x => setValue(parseFloat(x)))
+  }, [path]);
+
+  const MIN_SEND_DELAY = 50; // ms TODO: Maybe adjust this
+  const [lastUpdate, setLastUpdate] = useState(0);
+  const onChange = (_, newValue) => {
+    setValue(newValue);
+    const currentTime = +new Date();
+    if((lastUpdate + MIN_SEND_DELAY < currentTime) && newValue !== value) {
+      console.info(currentTime - lastUpdate);
+      setLastUpdate(currentTime);
+      nctrlValue.setValue(newValue);
+    }
+  };
+
+  const onChangeCommitted = (e, value) =>
+    nctrlValue
+      .setValue(value)
+      .then(() =>
+        nctrlValue
+          .value()
+          .then(value => setValue(parseFloat(value)))
+      );
 
   if (options) {
     const marks = Object.keys(options).map(key => ({ value: parseFloat(key), label: options[key] }));
@@ -119,12 +139,8 @@ export function NctrlValueSlider({ path, options, min, max }) {
       <div className={classes.sliderBox}>
         <Slider
           value={value_next_marking}
-          onChange={(e, value) =>
-            nctrlValue
-              .setValue(value)
-              .then(() => refreshValue())
-              .catch(e => console.error(e))
-          }
+          onChange={onChange}
+          onChangeCommitted={onChangeCommitted}
           aria-labelledby="discrete-slider-restrict"
           step={null}
           marks={marks}
@@ -143,13 +159,9 @@ export function NctrlValueSlider({ path, options, min, max }) {
             {value: max, label: max}
           ]}
           value={value}
-          onChange={(e, value) =>
-            nctrlValue
-              .setValue(value)
-              .then(() => refreshValue())
-              .catch(e => console.error(e))
-          }
-          valueLabelFormat={x => x.toFixed(2)}
+          onChange={onChange}
+          onChangeCommitted={onChangeCommitted}
+          valueLabelFormat={x => x.toFixed(1)}
           aria-labelledby="discrete-slider-always"
           valueLabelDisplay="on"
           min={min}

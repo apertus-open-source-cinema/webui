@@ -11,7 +11,13 @@
     4: 4
 
 - input: slider
-  name: Exposure Time [s]
-  path: devices/cmv12000/computed/exposure_time_s
+  name: Exposure Time [ms]
+  path: devices/cmv12000/computed/exposure_time_ms
   min: 0
   max: 0.1
+
+- input: slider
+  name: Analog Gain
+  path: devices/cmv12000/computed/analog_gain
+  min: 0
+  max: 4
