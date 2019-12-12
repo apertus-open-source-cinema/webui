@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     backgroundColor: theme.palette.background.default,
     width: '100vw',
+    minHeight: '100vw',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
