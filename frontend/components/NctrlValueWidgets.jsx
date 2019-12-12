@@ -103,7 +103,7 @@ export function NctrlValueSlider({ path, options, min, max }) {
 
   const [value, setValue] = useState(0.0);
   useEffect(() => {
-    nctrlValue.value().then(x => setValue(parseFloat(x)))
+    nctrlValue.value().then(x => setValue(parseFloat(x)));
   }, [path]);
 
   const MIN_SEND_DELAY = 50; // ms TODO: Maybe adjust this
@@ -111,7 +111,7 @@ export function NctrlValueSlider({ path, options, min, max }) {
   const onChange = (_, newValue) => {
     setValue(newValue);
     const currentTime = +new Date();
-    if((lastUpdate + MIN_SEND_DELAY < currentTime) && newValue !== value) {
+    if (lastUpdate + MIN_SEND_DELAY < currentTime && newValue !== value) {
       console.info(currentTime - lastUpdate);
       setLastUpdate(currentTime);
       nctrlValue.setValue(newValue);
@@ -121,14 +121,13 @@ export function NctrlValueSlider({ path, options, min, max }) {
   const onChangeCommitted = (e, value) =>
     nctrlValue
       .setValue(value)
-      .then(() =>
-        nctrlValue
-          .value()
-          .then(value => setValue(parseFloat(value)))
-      );
+      .then(() => nctrlValue.value().then(value => setValue(parseFloat(value))));
 
   if (options) {
-    const marks = Object.keys(options).map(key => ({ value: parseFloat(key), label: options[key] }));
+    const marks = Object.keys(options).map(key => ({
+      value: parseFloat(key),
+      label: options[key],
+    }));
 
     const value_next_marking = marks
       .map(x => x.value)
@@ -155,8 +154,8 @@ export function NctrlValueSlider({ path, options, min, max }) {
       <div className={classes.sliderBox}>
         <Slider
           marks={[
-            {value: min, label: min},
-            {value: max, label: max}
+            { value: min, label: min },
+            { value: max, label: max },
           ]}
           value={value}
           onChange={onChange}

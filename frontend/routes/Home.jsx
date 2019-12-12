@@ -13,7 +13,7 @@ import {
 import { Link, Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'markdown-to-jsx';
 import { routes } from '../*/*.jsx';
-import { PlainCommand } from './SystemInformation';
+import { PlainCommand } from '../components/CommandWidgets';
 
 export const title = 'Home';
 export const route = '/';
@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
+    justifyContent: 'center',
   },
   card: {
     padding: theme.spacing(1),
@@ -66,25 +67,23 @@ export function Component(props) {
         </Container>
       </div>
 
-      <Container className={classes.cardGrid} maxWidth="md">
-        <Grid container spacing={4}>
+      <Container maxWidth="md">
+        <Grid container className={classes.cardGrid} spacing={4}>
           <HomeCard title={'Connect via SSH'} raw>
             <Typography>Connect to the camera via ssh to get a normal linux shell.</Typography>
-            <pre>
-              $ ssh operator@
-              <PlainCommand
-                command={`ip -4 addr show wlan0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'  `}
-                interval={10000}
-              />
-            </pre>
-            or
-            <pre>
-              $ ssh operator@
-              <PlainCommand
-                command={`ip -4 addr show eth0 | grep -oP '(?<=inet\\s)\\d+(\\.\\d+){3}'  `}
-                interval={10000}
-              />
-            </pre>
+            <PlainCommand command={`ip -4 addr show`} interval={10000}>
+              {result => {
+                const matches = [...result.matchAll(/\d: ([\w\d]*):.*?(inet\s)(\d+(\.\d+){3})/gms)];
+                return matches
+                  .map(([_whole, ifname, _inet, ip]) => ({ ifname, ip }))
+                  .filter(x => x.ifname !== 'lo')
+                  .map(x => (
+                    <pre key={x.ifname}>
+                      # for interface {x.ifname}:{'\n'}ssh operator@{x.ip}
+                    </pre>
+                  ));
+              }}
+            </PlainCommand>
             <Typography>
               The <b>default password</b> is <i>axiom</i>.
             </Typography>

@@ -38,6 +38,7 @@ const useStyles = makeStyles(theme => ({
   ul: {
     listStyle: 'none',
     padding: 0,
+    paddingBottom: 100,
   },
   notWide: {
     maxWidth: 750,
@@ -73,12 +74,13 @@ export function Component(props) {
       }
       <ul className={classes.ul}>
         {parsed.map((x, i) => {
-          const InputWidget = NctrlValueWidgets[`NctrlValue${x.input.replace(/^(.)/, v => v.toUpperCase())}`];
+          const InputWidget =
+            NctrlValueWidgets[`NctrlValue${x.input.replace(/^(.)/, v => v.toUpperCase())}`];
           return (
             <div className={classes.notWide} key={i}>
               <Typography variant="h6">{x.name || Fs.of(x.path).name()}:</Typography>
               <Paper>
-                <InputWidget {...x} path={`${NCTRL_BASE_PATH}${x.path}`}/>
+                <InputWidget {...x} path={`${NCTRL_BASE_PATH}${x.path}`} />
               </Paper>
             </div>
           );
@@ -114,7 +116,7 @@ function EditDashboard({ current_yml: currentYaml, setYaml }) {
             label="YAML dashboard description"
             defaultValue={currentYaml}
             inputRef={inputEl}
-          ></TextField>
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)} color="primary">
@@ -127,7 +129,7 @@ function EditDashboard({ current_yml: currentYaml, setYaml }) {
             }}
             color="primary"
           >
-            Add
+            Apply
           </Button>
         </DialogActions>
       </Dialog>

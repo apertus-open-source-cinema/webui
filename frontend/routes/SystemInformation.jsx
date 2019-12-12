@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { exec } from '../util/exec';
+import { Command } from '../components/CommandWidgets';
 
 export const title = 'System Information';
 export const route = '/system_information';
@@ -19,27 +17,4 @@ export function Component(props) {
       <Command command="ps -aef --forest" interval={10000} />
     </div>
   );
-}
-
-export function Command(props) {
-  return (
-    <pre style={{ backgroundColor: '#eee', overflowX: 'auto' }}>
-      $ {props.command} {`\n`} <PlainCommand {...props} />
-    </pre>
-  );
-}
-
-export function PlainCommand({ command, interval }) {
-  const [output, setOutput] = useState('');
-  useEffect(() => {
-    const callback = () =>
-      exec(command)
-        .then(result => setOutput(result[0]))
-        .catch(err => setOutput(err[1]));
-    const interval_handle = setInterval(callback, interval);
-    callback();
-    return () => clearInterval(interval_handle);
-  }, [command]);
-
-  return <>{output}</>;
 }

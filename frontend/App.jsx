@@ -14,6 +14,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
+import { useState } from 'react';
+import clsx from 'clsx';
+import { isDesktop } from './util/isDesktop';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -21,7 +24,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     backgroundColor: theme.palette.background.default,
     width: '100vw',
-    height: '100vh',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -39,32 +41,28 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    maxWidth: `calc(100vw - ${drawerWidth}px)`,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: isDesktop ? -drawerWidth : 0,
+    maxWidth: isDesktop ? `calc(100% - ${drawerWidth}px)` : '100%',
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
   },
   toolbar: theme.mixins.toolbar,
 }));
 
-function ListItemLink(props) {
-  const { icon, primary, to, position } = props;
-
-  const renderLink = React.useMemo(
-    () =>
-      React.forwardRef((itemProps, ref) => <RouterLink to={to} {...itemProps} innerRef={ref} />),
-    [to]
-  );
-
-  return (
-    <li style={{ order: position }}>
-      <ListItem button component={renderLink}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
-      </ListItem>
-    </li>
-  );
-}
-
 export function App(props) {
   const classes = useStyles();
+
+  const [drawerOpen, setDrawerOpen] = useState(isDesktop);
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -73,8 +71,7 @@ export function App(props) {
             color="inherit"
             aria-label="open drawer"
             edge="start"
-            onClick={() => {}}
-            className={classes.menuButton}
+            onClick={() => setDrawerOpen(!drawerOpen)}
           >
             <MenuIcon />
           </IconButton>
@@ -94,20 +91,32 @@ export function App(props) {
 
       <Drawer
         className={classes.drawer}
-        variant="permanent"
+        variant={isDesktop ? 'persistent' : 'temporary'}
         classes={{
           paper: classes.drawerPaper,
         }}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
       >
         <div className={classes.toolbar} />
         <List>
           {Object.values(routes).map(({ route, title, position }) => (
-            <ListItemLink to={route} primary={title} key={route} position={position || 100} />
+            <ListItemLink
+              to={route}
+              primary={title}
+              key={route}
+              position={position || 100}
+              onClick={!isDesktop ? () => setDrawerOpen(false) : () => {}}
+            />
           ))}
         </List>
       </Drawer>
 
-      <div className={classes.content}>
+      <div
+        className={clsx(classes.content, {
+          [classes.contentShift]: drawerOpen && isDesktop,
+        })}
+      >
         <div className={classes.toolbar} />
         <Switch>
           {Object.values(routes).map(({ route, Component }) => (
@@ -116,5 +125,22 @@ export function App(props) {
         </Switch>
       </div>
     </div>
+  );
+}
+
+function ListItemLink({ icon, primary, to, position, onClick }) {
+  const renderLink = React.useMemo(
+    () =>
+      React.forwardRef((itemProps, ref) => <RouterLink to={to} {...itemProps} innerRef={ref} />),
+    [to]
+  );
+
+  return (
+    <li style={{ order: position }}>
+      <ListItem button component={renderLink} onClick={onClick}>
+        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+        <ListItemText primary={primary} />
+      </ListItem>
+    </li>
   );
 }
