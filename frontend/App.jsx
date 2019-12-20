@@ -78,7 +78,7 @@ export function App(props) {
           </IconButton>
 
           <Typography variant="h6" noWrap>
-            AXIOM WebUi -&nbsp;
+            {process.env.MOCK ? 'Mock' : ''} AXIOM WebUi -&nbsp;
             <Switch>
               {Object.values(routes).map(({ route, title }) => (
                 <Route exact path={route} key={route}>

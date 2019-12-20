@@ -4,8 +4,20 @@ import { exec } from './exec';
  * A global cache to save the types and location of known files
  * @type {Map<String, {type: String}>}
  */
+
 const fs_wisdom = new Map();
+let mock_promise = undefined;
+if (process.env.MOCK) {
+  mock_promise = import('./mock_fs_data.json');
+  mock_promise.then(x => x.forEach(({ k, v }) => fs_wisdom.set(k, v)));
+}
+
 export async function fill_wisdom(path, depth) {
+  if (process.env.MOCK) {
+    await mock_promise;
+    return true;
+  }
+
   const striped_path = path.replace(/\/$/, '');
   if (depth === 1 && fs_wisdom.has(striped_path)) {
     return true;
@@ -104,15 +116,23 @@ export class Fs {
   async load() {
     if (!(await this.exists())) throw Error(`'${this.path}' does not Exist`);
     if (!(await this.isFile())) throw Error(`'${this.path}' is not a file`);
+    if (process.env.MOCK) {
+      return fs_wisdom.get(this.path).content;
+    }
     const exec_result = await exec(`cat "${this.path}"`);
     return exec_result[0];
   }
 
   async upload(value) {
     if (await this.isDir()) throw Error(`'${this.path}' is a directory`);
+    if (process.env.MOCK) {
+      fs_wisdom.set(this.path, { ...fs_wisdom.get(this.path), content: value });
+      return true;
+    }
 
     return exec(`echo -n '${value}' > "${this.path}"`).then(sucess => true);
   }
 }
 
 window.Fs = Fs;
+window.fs_wisdom = fs_wisdom;
