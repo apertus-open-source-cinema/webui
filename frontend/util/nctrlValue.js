@@ -21,6 +21,11 @@ export class NctrlValue {
 
     const normalized_path = path.replace(/\/value(\/)?$/, '');
     this.path = normalized_path;
+
+    // caches as optimization
+    this.lastFetch = { time: 0, value: 0 };
+    this.writable = undefined;
+    this.map = undefined;
   }
 
   name() {
@@ -28,25 +33,42 @@ export class NctrlValue {
   }
 
   async isWritable() {
-    return Fs.of(`${this.path}/writable`)
-      .load()
-      .then(x => x !== 'false')
-      .catch(notExplicit => true);
+    if (this.writable === undefined) {
+      this.writable = Fs.of(`${this.path}/writable`)
+        .load()
+        .then(x => x !== 'false')
+        .catch(notExplicit => true);
+    }
+    return this.writable;
   }
 
   async getMap() {
-    return await Fs.of(`${this.path}/map/`)
-      .ls()
-      .then(async entries => {
-        return await Promise.all(
-          entries.map(async entry => ({ representation: entry.name(), value: await entry.load() }))
-        );
-      })
-      .catch(noMap => null);
+    if (this.map === undefined) {
+      this.map = await Fs.of(`${this.path}/map/`)
+        .ls()
+        .then(async entries => {
+          return await Promise.all(
+            entries.map(async entry => ({
+              representation: entry.name(),
+              value: await entry.load(),
+            }))
+          );
+        })
+        .catch(noMap => null);
+    }
+    return this.map;
   }
 
   async value() {
-    return Fs.of(`${this.path}/value`).load();
+    const time = +new Date();
+    if (this.lastFetch.time + 100 > time) {
+      return this.lastFetch.value;
+    } else {
+      const value = Fs.of(`${this.path}/value`).load();
+      this.lastFetch.time = time;
+      this.lastFetch.value = value;
+      return value;
+    }
   }
 
   async setValue(newValue) {

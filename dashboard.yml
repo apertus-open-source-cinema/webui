@@ -1,23 +1,30 @@
-- input: slider
-  name: Analog Gain
-  path: devices/cmv12000/computed/analog_gain
-  options:
-    0.3: 1/3
-    0.6: 2/3
-    1: 1
-    1.3: 4/3
-    2: 2
-    3: 3
-    4: 4
+Analog Gain:
+  - widget: slider
+    path: devices/cmv12000/computed/analog_gain
+    options: { 0.3: 1/3, 0.6: 2/3, 1: 1, 1.3: 4/3, 2: 2, 3: 3, 4: 4}
+  - widget: textfield
+    path: devices/cmv12000/computed/analog_gain
 
-- input: slider
-  name: Exposure Time [ms]
-  path: devices/cmv12000/computed/exposure_time_ms
-  min: 0
-  max: 0.1
+Exposure Time [ms]:
+  - widget: slider
+    path: devices/cmv12000/computed/exposure_time_ms
+    min: 0
+    max: 10
+  - widget: slider
+    path: devices/cmv12000/computed/exposure_time_ms
+    min: 10
+    max: 100
+  - widget: slider
+    path: devices/cmv12000/computed/exposure_time_ms
+    min: 100
+    max: 10000
 
-- input: slider
-  name: Analog Gain
-  path: devices/cmv12000/computed/analog_gain
-  min: 0
-  max: 4
+  - widget: spacing
+    px: 30
+  - widget: buttons
+    path:  devices/cmv12000/computed/exposure_time_ms
+    buttons:
+      -1 EV: x => parseFloat(x) / 2
+      -1/3 EV: x => parseFloat(x) / Math.pow(2, 1/3)
+      +1/3 EV: x => parseFloat(x) * Math.pow(2, 1/3)
+      +1 EV: x => parseFloat(x) * 2

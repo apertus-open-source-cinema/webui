@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
     margin: '10px auto',
     marginBottom: '20px',
   },
+  paper: {
+    padding: '10px 5px',
+  },
 }));
 
 export function Component(props) {
@@ -61,6 +64,9 @@ export function Component(props) {
 
   const parsed = useYaml(yaml) || [];
 
+  const [rerenderDep, setRerenderDep] = useState(0);
+  const rerender = () => setRerenderDep(rerenderDep + 1);
+
   return (
     <div>
       {
@@ -72,20 +78,32 @@ export function Component(props) {
           }}
         />
       }
-      <ul className={classes.ul}>
-        {parsed.map((x, i) => {
-          const InputWidget =
-            NctrlValueWidgets[`NctrlValue${x.input.replace(/^(.)/, v => v.toUpperCase())}`];
+      <div className={classes.ul}>
+        {Object.keys(parsed).map((heading, i) => {
           return (
             <div className={classes.notWide} key={i}>
-              <Typography variant="h6">{x.name || Fs.of(x.path).name()}:</Typography>
-              <Paper>
-                <InputWidget {...x} path={`${NCTRL_BASE_PATH}${x.path}`} />
+              <Typography variant="h6">{heading}:</Typography>
+              <Paper className={classes.paper}>
+                {parsed[heading].map((x, i) => {
+                  const InputWidget =
+                    NctrlValueWidgets[
+                      `NctrlValue${x.widget.replace(/^(.)/, v => v.toUpperCase())}`
+                    ];
+                  return (
+                    <InputWidget
+                      key={i}
+                      rerender={rerender}
+                      rerenderDep={rerenderDep}
+                      {...x}
+                      path={`${NCTRL_BASE_PATH}${x.path}`}
+                    />
+                  );
+                })}
               </Paper>
             </div>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 }

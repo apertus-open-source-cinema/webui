@@ -98,7 +98,7 @@ export class Fs {
       console.info('fetch eager', this.path);
     }
 
-    return direct_children.map(x => Fs.of(this.path + '/' + x));
+    return [...new Set(direct_children)].map(x => Fs.of(this.path + '/' + x));
   }
 
   async load() {
