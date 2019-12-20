@@ -1,0 +1,22 @@
+name: Deploy to github pages
+on: [push]
+
+jobs:
+  jobs:
+    publish:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v1
+        - name: Build
+          run: |
+            apt-get update -q && apt-get install -y -q yarnpkg
+            yarnpkg build-mock
+        - name: Deploy
+          if: success()
+          uses: crazy-max/ghaction-github-pages@v1
+          with:
+            target_branch: gh-pages
+            build_dir: dist
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
