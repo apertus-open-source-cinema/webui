@@ -1163,4 +1163,4 @@ module.exports=function(n){return new Promise(function(e,o){var r=document.creat
 },{}],0:[function(require,module,exports) {
 var b=require("LhPx");b.register("js",require("uxal"));
 },{}]},{},[0,"deHo"], null)
-//# sourceMappingURL=$PUBLIC_URL/frontend.08e831fc.js.map
+//# sourceMappingURL=https://apertus-open-source-cinema.github.io/webui/frontend.08e831fc.js.map
