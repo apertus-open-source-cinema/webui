@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node backend/entrypoint",
-    "build": "parcel build frontend/index.html --public-url '$PUBLIC_URL' --detailed-report",
-    "build-mock": "MOCK=1 parcel build frontend/index.html --public-url '$PUBLIC_URL' --detailed-report",
+    "build": "parcel build frontend/index.html --public-url \"$PUBLIC_URL\" --detailed-report",
+    "build-mock": "MOCK=1 parcel build frontend/index.html --public-url \"$PUBLIC_URL\" --detailed-report",
     "watch": "NODE_ENV=development parcel watch frontend/index.html &\n yarn start",
     "frontend": "NODE_ENV=development MOCK=1 parcel watch frontend/index.html",
     "format": "prettier --write '{frontend,backend}/**/*.{js,jsx}'"
