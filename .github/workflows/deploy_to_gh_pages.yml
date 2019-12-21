@@ -1,6 +1,5 @@
 name: Deploy to github pages
 on: [push]
-
 jobs:
   publish:
     runs-on: ubuntu-latest
