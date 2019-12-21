@@ -11,11 +11,9 @@ jobs:
         run: |
           apt-get update -q && apt-get install -y -q yarnpkg
           yarnpkg build-mock
-      - name: Deploy
-        if: success()
-        uses: crazy-max/ghaction-github-pages@v1
-        with:
-          target_branch: gh-pages
-          build_dir: dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v2
+      env:
+        ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./dist
