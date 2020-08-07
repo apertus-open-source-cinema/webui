@@ -3,6 +3,9 @@ A web based user interface to control AXIOM cameras.
 To be used in connection with [nctrl](https://github.com/axiom-micro/nctrl), the central hardware 
 abstraction layer for AXIOM cameras.
 
+## Try it!
+You can try (a mocked version) [here](https://apertus-open-source-cinema.github.io/webui/).
+
 ## Features
 The webui already has some working features, many WIP features and some planed features:
 
