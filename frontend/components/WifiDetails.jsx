@@ -1,14 +1,9 @@
 import React from 'react';
-
+import WifiIcon from '../components/WifiIcon';
+import WifiPopUp from '../components/WifiPopUp';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import WifiPopUp from '../components/WifiPopUp';
-
-import SignalWifi0BarIcon from '@material-ui/icons/SignalWifi0Bar';
-import SignalWifi1BarIcon from '@material-ui/icons/SignalWifi1Bar';
-import SignalWifi2BarIcon from '@material-ui/icons/SignalWifi2Bar';
-import SignalWifi3BarIcon from '@material-ui/icons/SignalWifi3Bar';
-import SignalWifi4BarIcon from '@material-ui/icons/SignalWifi4Bar';
+import Chip from '@material-ui/core/Chip';
 import InfoIcon from '@material-ui/icons/Info';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,6 +15,10 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     gap: '1em',
   },
+  active: {
+    color: '#FA8756',
+    fontWeight: '700',
+  },
   wrapper: {
     padding: '1.5em 0',
   },
@@ -29,6 +28,15 @@ const useStyles = makeStyles(theme => ({
       display: 'flex',
       gap: '1em',
     },
+  },
+  icon: {
+    cursor: 'pointer',
+    '&:hover': {
+      opacity: 0.8,
+    },
+  },
+  chip: {
+    height: '24px',
   },
 }));
 
@@ -44,13 +52,23 @@ export const WifiDetails = ({ wifi_network }) => {
     <>
       <div className={`${classes.row} ${classes.wrapper}`}>
         <div className={classes.row}>
-          <SignalWifi4BarIcon color="primary" />
-          <Typography>{wifi_network.SSID}</Typography>
+          <WifiIcon SIGNAL={parseInt(wifi_network.SIGNAL, 10)} />
+          {/* <SignalWifi4BarIcon color="primary" /> */}
+          <Typography className={wifi_network['IN-USE'] === '*' ? classes.active : ''}>
+            {wifi_network.SSID}
+          </Typography>
         </div>
         <div className={classes.row}>
           <div className={classes.details}>
             <Typography>{wifi_network.BSSID}</Typography>
-            <Typography>{wifi_network.SECURITY}</Typography>
+            <Typography component="div">
+              <Chip
+                className={classes.chip}
+                variant="outlined"
+                label={wifi_network.SECURITY}
+                color="primary"
+              />
+            </Typography>
           </div>
           <InfoIcon className={classes.icon} color="primary" onClick={handleDialog} />
           <WifiPopUp wifi_network={wifi_network} open={open} setOpen={setOpen} />

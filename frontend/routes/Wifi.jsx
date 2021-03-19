@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { WifiDetails } from '../components/WifiDetails';
+import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-import { WifiDetails } from '../components/WifiDetails';
-
+import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { exec_table, exec } from '../util/exec';
@@ -11,64 +12,47 @@ import { sortArrayOfObjects } from '../util/sort';
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   wifiNetwork: {
     margin: '2em',
     marginTop: '30px',
     width: '80%',
     margin: '0 auto',
   },
+  header: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+  },
   select: {
     width: '220px',
   },
-});
+  skeletonWrapper: {
+    margin: '20px 0',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+  },
+}));
 
 export function Component(props) {
   const classes = useStyles();
-  const [wifi_networks, setWifi_networks] = useState([
-    {
-      'IN-USE': '',
-      BSSID: '26:89:02:64:12',
-      SSID: 'DedSec',
-      MODE: 'nfra',
-      CHAN: '6',
-      RATE: '70 Mbit/s',
-      SIGNAL: '2',
-      BARS: '▂▄▆█',
-      SECURITY: 'WA2',
-      '': '',
-    },
-    {
-      'IN-USE': '',
-      BSSID: '80:26:89:02:64:12',
-      SSID: 'GigaFibre_DedSec',
-      MODE: 'Infra',
-      CHAN: '1',
-      RATE: '270 Mbit/s',
-      SIGNAL: '82',
-      BARS: '▂▄▆█',
-      SECURITY: 'WPA2',
-      '': '',
-    },
-    {
-      'IN-USE': '',
-      BSSID: '2:64:12',
-      SSID: 'Wi',
-      MODE: 'a',
-      CHAN: '04',
-      RATE: '20 Mbit/s',
-      SIGNAL: '8',
-      BARS: '▂▄▆█',
-      SECURITY: 'A2',
-      '': '',
-    },
-  ]);
-  const [sortBy, setSortBy] = useState('SSID');
+  const [wifi_networks, setWifi_networks] = useState();
+  const [last_refresh, setLast_refresh] = useState();
+  const [sortBy, setSortBy] = useState('Default');
 
-  // setInterval(() => {
-  //   exec_table('nmcli dev wifi').then(result => this.setState({ wifi_networks: result }));
-  //   exec('date').then(result => this.setState({ last_refresh: result }));
-  // }, 1000);
+  useEffect(() => {
+    setInterval(() => {
+      exec_table('nmcli dev wifi').then(result => setWifi_networks(result));
+      exec('date').then(result => setLast_refresh(result));
+    }, 1000);
+  }, []);
+
   const handleChange = event => {
     setSortBy(event.target.value);
     setWifi_networks(sortArrayOfObjects(wifi_networks, event.target.value));
@@ -76,25 +60,40 @@ export function Component(props) {
 
   return (
     <div className={classes.wifiNetwork}>
-      <TextField
-        select
-        className={classes.select}
-        label="Sort By"
-        value={sortBy}
-        onChange={handleChange}
-        variant="outlined"
-      >
-        <MenuItem value="BSSID">BSSID</MenuItem>
-        <MenuItem value="SSID">SSID</MenuItem>
-        <MenuItem value="MODE">MODE</MenuItem>
-        <MenuItem value="CHAN">CHAN</MenuItem>
-        <MenuItem value="RATE">RATE</MenuItem>
-        <MenuItem value="SIGNAL">SIGNAL</MenuItem>
-        <MenuItem value="SECURITY">SECURITY</MenuItem>
-      </TextField>
-      {wifi_networks
-        ? wifi_networks.map(wifi_network => <WifiDetails wifi_network={wifi_network} />)
-        : null}
+      <div className={classes.header}>
+        <div>
+          <Typography color="primary">Last Refresh</Typography>{' '}
+          <Typography>{last_refresh}</Typography>
+        </div>
+        <TextField
+          select
+          className={classes.select}
+          label="Sort By"
+          value={sortBy}
+          onChange={handleChange}
+          variant="outlined"
+        >
+          <MenuItem value="Default">Default</MenuItem>
+          <MenuItem value="BSSID">BSSID</MenuItem>
+          <MenuItem value="SSID">SSID</MenuItem>
+          <MenuItem value="MODE">MODE</MenuItem>
+          <MenuItem value="CHAN">CHAN</MenuItem>
+          <MenuItem value="RATE">RATE</MenuItem>
+          <MenuItem value="SIGNAL">SIGNAL</MenuItem>
+          <MenuItem value="SECURITY">SECURITY</MenuItem>
+        </TextField>
+      </div>
+      {wifi_networks ? (
+        wifi_networks.map((wifi_network, i) => <WifiDetails wifi_network={wifi_network} key={i} />)
+      ) : (
+        <div className={classes.skeletonWrapper}>
+          <Skeleton height={30} animation="wave" />
+          <Skeleton height={30} animation="wave" />
+          <Skeleton height={30} animation="wave" />
+          <Skeleton height={30} animation="wave" />
+          <Skeleton height={30} animation="wave" />
+        </div>
+      )}
     </div>
   );
 }

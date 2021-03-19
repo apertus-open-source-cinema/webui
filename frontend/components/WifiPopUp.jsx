@@ -1,39 +1,31 @@
 import React from 'react';
+import CircularProgressWithLabel from '../components/CircularProgressWithLabel';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-
-import CircularProgressWithLabel from '../components/CircularProgressWithLabel';
-import SignalWifi0BarIcon from '@material-ui/icons/SignalWifi0Bar';
-import SignalWifi1BarIcon from '@material-ui/icons/SignalWifi1Bar';
-import SignalWifi2BarIcon from '@material-ui/icons/SignalWifi2Bar';
-import SignalWifi3BarIcon from '@material-ui/icons/SignalWifi3Bar';
-import SignalWifi4BarIcon from '@material-ui/icons/SignalWifi4Bar';
+import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
+import SpeedIcon from '@material-ui/icons/Speed';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   root: {
     background: 'transparent',
   },
-
-  title: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1em',
-  },
   dialogTitle: {
-    padding: '1em',
+    padding: '0.6em',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '70%',
+    width: '75%',
     background: '#FA8756',
     color: '#fff',
     margin: '0 auto',
     borderRadius: '6px',
     marginTop: '30px',
-    marginBottom: '-40px',
+    marginBottom: '-30px',
     zIndex: '1',
     maxWidth: '380px',
   },
@@ -51,16 +43,35 @@ const useStyles = makeStyles(theme => ({
     background: '#fff',
   },
   bodyTitle: {
-    fontSize: '14px',
-    marginRight: '24px',
+    fontSize: '12px',
+  },
+  wrapper: {
+    width: '100%',
+  },
+  details: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  icon: {
+    height: '25px',
   },
   value: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '5px',
     color: '#898989',
   },
-}));
+  buttonWrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '8px',
+  },
+});
 
 export default function WifiPopUp({ open, setOpen, wifi_network }) {
-  const { IN_USE, BSSID, SSID, MODE, CHAN, RATE, SIGNAL, BARS, SECURITY } = wifi_network;
+  const { BSSID, SSID, MODE, CHAN, RATE, SIGNAL, SECURITY } = wifi_network;
   const classes = useStyles();
 
   const handleClose = () => {
@@ -82,39 +93,54 @@ export default function WifiPopUp({ open, setOpen, wifi_network }) {
         maxWidth={'sm'}
       >
         <div className={classes.dialogTitle}>
-          <span className={classes.title}>
-            <SignalWifi4BarIcon /> {SSID}
-          </span>
-          <CircularProgressWithLabel value={40} />
+          <Typography>{SSID}</Typography>
+          <CircularProgressWithLabel value={parseInt(SIGNAL, 10)} />
         </div>
 
         <div className={classes.dialogBody}>
-          <div>
-            <Typography color="primary">
-              <span className={classes.bodyTitle}>BSSID</span>
-              <span className={classes.value}>{BSSID}</span>
+          <div className={classes.wrapper}>
+            <Typography component="div" className={classes.details} color="primary">
+              <div className={classes.bodyTitle}>BSSID</div>
+              <div className={classes.value}>{BSSID}</div>
             </Typography>
-            <Typography color="primary">
-              <span className={classes.bodyTitle}>MODE</span>
-              <span className={classes.value}>{MODE}</span>
+            <Typography component="div" className={classes.details} color="primary">
+              <div className={classes.bodyTitle}>MODE</div>
+              <div className={classes.value}>{MODE}</div>
             </Typography>
-            <Typography color="primary">
-              <span className={classes.bodyTitle}>CHAN</span>
-              <span className={classes.value}>{CHAN}</span>
+            <Typography component="div" className={classes.details} color="primary">
+              <div className={classes.bodyTitle}>CHAN</div>
+              <div className={classes.value}>
+                <div className={classes.icon}>
+                  <NetworkCheckIcon fontSize="small" />
+                </div>
+                {CHAN}
+              </div>
             </Typography>
-            <Typography color="primary">
-              <span className={classes.bodyTitle}>RATE</span>
-              <span className={classes.value}>{RATE}</span>
+            <Typography component="div" className={classes.details} color="primary">
+              <div className={classes.bodyTitle}>RATE</div>
+              <div className={classes.value}>
+                <div className={classes.icon}>
+                  <SpeedIcon fontSize="small" />
+                </div>
+                {RATE}
+              </div>
             </Typography>
-            <Typography color="primary">
-              <span className={classes.bodyTitle}>SECURITY</span>
-              <span className={classes.value}>{SECURITY}</span>
+            <Typography component="div" className={classes.details} color="primary">
+              <div className={classes.bodyTitle}>SECURITY</div>
+              <div className={classes.value}>
+                <div className={classes.icon}>
+                  <VpnKeyIcon fontSize="small" />
+                </div>
+                {SECURITY}
+              </div>
             </Typography>
           </div>
         </div>
-        <Button onClick={handleClose} color="primary">
-          Close
-        </Button>
+        <div className={classes.buttonWrapper}>
+          <Button onClick={handleClose} color="secondary" startIcon={<CloseIcon />}>
+            Close
+          </Button>
+        </div>
       </Dialog>
     </div>
   );
