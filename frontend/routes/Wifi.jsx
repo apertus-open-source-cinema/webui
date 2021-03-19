@@ -15,8 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { green, orange } from '@material-ui/core/colors';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { Box } from '@material-ui/core';
-import { isNullishCoalesce } from 'typescript';
+import { Box, Chip } from '@material-ui/core';
 
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
@@ -49,17 +48,15 @@ export class Component extends React.Component {
   render() {
     return (
       <div>
-        <EnhancedTable rows={this.state.wifi_networks} />
+        <SortableTable rows={this.state.wifi_networks} />
       </div>
     );
   }
 }
 
-
-// Meta-Data
-
 const in_use = 'IN-USE';
-const first_column = 'IN-USE';
+const initial_direction = 'asc';
+const security = 'SECURITY';
 const active_color = orange[50];
 const headCells = {
   'IN-USE': { numeric: false, disablePadding: true, label: 'Connected' },
@@ -73,14 +70,9 @@ const headCells = {
   SECURITY: { numeric: false, disablePadding: false, label: 'Security' },
 };
 
-// Meta-Data 
-
-
-function EnhancedTableHead(props) {
+function SortableTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
-  const createSortHandler = property => event => {
-    onRequestSort(event, property);
-  };
+  const createSortHandler = property => event => onRequestSort(event, property);
 
   return (
     <TableHead>
@@ -89,7 +81,7 @@ function EnhancedTableHead(props) {
           return (
             <TableCell
               key={key}
-              align='center'
+              align="center"
               padding={headCells[key].disablePadding ? 'none' : 'default'}
               sortDirection={orderBy === key ? order : false}
             >
@@ -113,7 +105,7 @@ function EnhancedTableHead(props) {
   );
 }
 
-EnhancedTableHead.propTypes = {
+SortableTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
@@ -139,18 +131,16 @@ const useToolbarStyles = makeStyles(theme => ({
   },
 }));
 
-const EnhancedTableToolbar = () => {
+const SortableTableToolbar = () => {
   const classes = useToolbarStyles();
   return (
     <Box>
-    <Toolbar>
-      <Typography className={classes.title} variant="h6" id="tableTitle" component="span">
-      Active Wifi Networks
-      </Typography>      
-    </Toolbar>
-
+      <Toolbar>
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="span">
+          Active Wifi Networks
+        </Typography>
+      </Toolbar>
     </Box>
-
   );
 };
 
@@ -178,11 +168,21 @@ const useStyles = makeStyles(theme => ({
     top: 20,
     width: 1,
   },
+  chips: {
+    display: 'flex',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    '& > *': {
+      margin: theme.spacing(0.2),
+    },
+  },
 }));
 
 function descendingComparator(a, b, orderBy) {
   if (headCells[orderBy].numeric) {
-    return parseInt(b[orderBy]) < parseInt(a[orderBy]) ? -1 : parseInt(b[orderBy]) > parseInt(a[orderBy]);
+    return parseInt(b[orderBy]) < parseInt(a[orderBy])
+      ? -1
+      : parseInt(b[orderBy]) > parseInt(a[orderBy]);
   } else {
     return a[orderBy] < b[orderBy] ? -1 : a[orderBy] > b[orderBy];
   }
@@ -204,10 +204,18 @@ function stableSort(array, comparator) {
   return stabilizedThis.map(el => el[0]);
 }
 
-function EnhancedTable(props) {
+function extractWPA(wpas) {
+  let list = wpas.split(' ').map((str, idx) => {
+    return <Chip color="primary" size="small" label={str} key={idx} />;
+  });
+
+  return list;
+}
+
+function SortableTable(props) {
   const classes = useStyles();
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState(first_column);
+  const [order, setOrder] = useState(initial_direction);
+  const [orderBy, setOrderBy] = useState(in_use);
   const { rows } = props;
 
   const handleRequestSort = (event, property) => {
@@ -219,10 +227,10 @@ function EnhancedTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar />
+        <SortableTableToolbar />
         <TableContainer>
-          <Table className={classes.table} aria-labelledby="tableTitle" aria-label="enhanced table">
-            <EnhancedTableHead
+          <Table className={classes.table} aria-labelledby="tableTitle" aria-label="sortable table">
+            <SortableTableHead
               classes={classes}
               order={order}
               orderBy={orderBy}
@@ -241,13 +249,25 @@ function EnhancedTable(props) {
                   >
                     {Object.keys(headCells).map(function(key) {
                       return (
-                        <TableCell key={key} align='center' >
-                          {key==in_use? (row[key].length>0?
-                          <Skeleton variant="circle" width={10} height={10} style={{
-                            background : green.A200,
-                            alignContent: 'center',
-                            padding: 0,
-                          }} /> : null) : row[key]}
+                        <TableCell key={key} align="center">
+                          {key == in_use ? (
+                            row[key].length > 0 ? (
+                              <Skeleton
+                                variant="circle"
+                                width={10}
+                                height={10}
+                                style={{
+                                  background: green.A200,
+                                  alignContent: 'center',
+                                  padding: 0,
+                                }}
+                              />
+                            ) : null
+                          ) : key == security ? (
+                            <div className={classes.chips}>{extractWPA(row[security])}</div>
+                          ) : (
+                            row[key]
+                          )}
                         </TableCell>
                       );
                     })}
