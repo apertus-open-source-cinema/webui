@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "express": "~4.17.1",
+    "material-table": "^1.69.2",
     "socketio": "^1.0.0"
   },
   "devDependencies": {
