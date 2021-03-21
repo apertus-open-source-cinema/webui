@@ -59,7 +59,7 @@ const initial_direction = 'asc';
 const security = 'SECURITY';
 const active_color = orange[50];
 const headCells = {
-  'IN-USE': { numeric: false, disablePadding: true, label: 'Connected' },
+  [in_use]: { numeric: false, disablePadding: true, label: 'Connected' },
   BSSID: { numeric: false, disablePadding: false, label: 'BSSID' },
   SSID: { numeric: false, disablePadding: false, label: 'SSID' },
   MODE: { numeric: false, disablePadding: false, label: 'Mode' },
@@ -72,8 +72,6 @@ const headCells = {
 
 function SortableTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
-  const createSortHandler = property => event => onRequestSort(event, property);
-
   return (
     <TableHead>
       <TableRow>
@@ -88,7 +86,7 @@ function SortableTableHead(props) {
               <TableSortLabel
                 active={orderBy === key}
                 direction={orderBy === key ? order : 'asc'}
-                onClick={createSortHandler(key)}
+                onClick={(event)=>{onRequestSort(event, key)}}
               >
                 <b>{headCells[key].label}</b>
                 {orderBy === key ? (
@@ -170,7 +168,7 @@ const useStyles = makeStyles(theme => ({
   },
   chips: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'left',
     flexWrap: 'wrap',
     '& > *': {
       margin: theme.spacing(0.2),
