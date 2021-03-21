@@ -18,7 +18,7 @@ export class Component extends React.Component {
     setInterval(() => {
       exec_table('nmcli device wifi list').then(result => this.setState({ wifi_networks: result }));
       exec('date').then(result => this.setState({ last_refresh: result }));
-    }, 10000);
+    }, 1000);
   }
 
   render() {
