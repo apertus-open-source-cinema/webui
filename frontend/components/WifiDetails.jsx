@@ -29,6 +29,12 @@ const useStyles = makeStyles(theme => ({
       gap: '1em',
     },
   },
+  container: {
+    width: '130px',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    marginLeft: '1em',
+  },
   icon: {
     cursor: 'pointer',
     '&:hover': {
@@ -60,9 +66,18 @@ export const WifiDetails = ({ wifiNetwork }) => {
         <div className={classes.row}>
           <div className={classes.details}>
             <Typography>{wifiNetwork.BSSID}</Typography>
-            <Typography component="div">
-              <Chip className={classes.chip} label={wifiNetwork.SECURITY} color="primary" />
-            </Typography>
+            <div className={classes.container}>
+              <Typography component="div">
+                {wifiNetwork.SECURITY === 'WPA1 WPA2' ? (
+                  <div className={classes.row}>
+                    <Chip className={classes.chip} label={'WPA1'} color="primary" />
+                    <Chip className={classes.chip} label={'WPA2'} color="primary" />
+                  </div>
+                ) : (
+                  <Chip className={classes.chip} label={wifiNetwork.SECURITY} color="primary" />
+                )}
+              </Typography>
+            </div>
           </div>
           <InfoIcon className={classes.icon} color="primary" onClick={handleDialog} />
           <WifiPopUp wifiNetwork={wifiNetwork} open={open} setOpen={setOpen} />
