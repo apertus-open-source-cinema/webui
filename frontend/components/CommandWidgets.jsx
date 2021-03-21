@@ -9,12 +9,54 @@ export function Command(props) {
   );
 }
 
-export function PlainCommand({ command, interval, children }) {
+function extractLoadFromString(str = '') {
+  let list = str.split(',').map(ele => {
+    return ele.trim();
+  });
+  let one_min = list[2].split(':')[1];
+  let five_min = list[3];
+  let fifteen_min = list[4];
+
+  return [
+    {
+      label: 'One Minute Load',
+      data: [
+        {
+          primary: new Date(),
+          secondary: parseFloat(one_min),
+        },
+      ],
+    },
+    {
+      label: 'Five Minute Load',
+      data: [
+        {
+          primary: new Date(),
+          secondary: parseFloat(five_min),
+        },
+      ],
+    },
+    {
+      label: 'Fifteen Minute Load',
+      data: [
+        {
+          primary: new Date(),
+          secondary: parseFloat(fifteen_min),
+        },
+      ],
+    },
+  ];
+}
+
+export function PlainCommand({ command, interval, children, randomizeData }) {
   const [output, setOutput] = useState('');
   useEffect(() => {
     const callback = () =>
       exec(command)
-        .then(result => setOutput(result[0]))
+        .then(result => {
+          setOutput(result[0]);
+          if (randomizeData !== undefined) randomizeData(extractLoadFromString(result[0]));
+        })
         .catch(err => setOutput(err[1]));
     const interval_handle = setInterval(callback, interval);
     callback();
