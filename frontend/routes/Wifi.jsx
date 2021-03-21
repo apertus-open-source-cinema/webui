@@ -7,7 +7,6 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { exec_table, exec } from '../util/exec';
-import { sortArrayOfObjects } from '../util/sort';
 
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
@@ -42,20 +41,33 @@ const useStyles = makeStyles(theme => ({
 
 export function Component(props) {
   const classes = useStyles();
-  const [wifi_networks, setWifi_networks] = useState();
-  const [last_refresh, setLast_refresh] = useState();
+  const [wifiNetworks, setWifiNetworks] = useState();
+  const [lastRefresh, setLastRefresh] = useState();
   const [sortBy, setSortBy] = useState('Default');
+
+  const sortArrayOfObjects = (wifiNetworks, key) => {
+    if (key === 'Default') {
+      return wifiNetworks;
+    }
+    wifiNetworks.sort((a, b) => {
+      return a[key].localeCompare(b[key], undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      });
+    });
+
+    return wifiNetworks;
+  };
 
   useEffect(() => {
     setInterval(() => {
-      exec_table('nmcli dev wifi').then(result => setWifi_networks(result));
-      exec('date').then(result => setLast_refresh(result));
+      exec_table('nmcli dev wifi').then(result => setWifiNetworks(result));
+      exec('date').then(result => setLastRefresh(result));
     }, 1000);
   }, []);
 
   const handleChange = event => {
     setSortBy(event.target.value);
-    setWifi_networks(sortArrayOfObjects(wifi_networks, event.target.value));
   };
 
   return (
@@ -63,7 +75,7 @@ export function Component(props) {
       <div className={classes.header}>
         <div>
           <Typography color="primary">Last Refresh</Typography>{' '}
-          <Typography>{last_refresh}</Typography>
+          <Typography>{lastRefresh}</Typography>
         </div>
         <TextField
           select
@@ -83,8 +95,10 @@ export function Component(props) {
           <MenuItem value="SECURITY">SECURITY</MenuItem>
         </TextField>
       </div>
-      {wifi_networks ? (
-        wifi_networks.map((wifi_network, i) => <WifiDetails wifi_network={wifi_network} key={i} />)
+      {wifiNetworks ? (
+        sortArrayOfObjects(wifiNetworks, sortBy).map((wifiNetwork, i) => (
+          <WifiDetails wifiNetwork={wifiNetwork} key={i} />
+        ))
       ) : (
         <div className={classes.skeletonWrapper}>
           <Skeleton height={30} animation="wave" />

@@ -70,8 +70,8 @@ const useStyles = makeStyles({
   },
 });
 
-export default function WifiPopUp({ open, setOpen, wifi_network }) {
-  const { BSSID, SSID, MODE, CHAN, RATE, SIGNAL, SECURITY } = wifi_network;
+export default function WifiPopUp({ open, setOpen, wifiNetwork }) {
+  const { BSSID, SSID, MODE, CHAN, RATE, SIGNAL, SECURITY } = wifiNetwork;
   const classes = useStyles();
 
   const handleClose = () => {

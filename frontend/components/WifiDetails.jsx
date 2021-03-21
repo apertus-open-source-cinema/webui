@@ -36,11 +36,11 @@ const useStyles = makeStyles(theme => ({
     },
   },
   chip: {
-    height: '24px',
+    height: '30px',
   },
 }));
 
-export const WifiDetails = ({ wifi_network }) => {
+export const WifiDetails = ({ wifiNetwork }) => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -52,26 +52,20 @@ export const WifiDetails = ({ wifi_network }) => {
     <>
       <div className={`${classes.row} ${classes.wrapper}`}>
         <div className={classes.row}>
-          <WifiIcon SIGNAL={parseInt(wifi_network.SIGNAL, 10)} />
-          {/* <SignalWifi4BarIcon color="primary" /> */}
-          <Typography className={wifi_network['IN-USE'] === '*' ? classes.active : ''}>
-            {wifi_network.SSID}
+          <WifiIcon SIGNAL={parseInt(wifiNetwork.SIGNAL, 10)} />
+          <Typography className={wifiNetwork['IN-USE'] === '*' ? classes.active : ''}>
+            {wifiNetwork.SSID}
           </Typography>
         </div>
         <div className={classes.row}>
           <div className={classes.details}>
-            <Typography>{wifi_network.BSSID}</Typography>
+            <Typography>{wifiNetwork.BSSID}</Typography>
             <Typography component="div">
-              <Chip
-                className={classes.chip}
-                variant="outlined"
-                label={wifi_network.SECURITY}
-                color="primary"
-              />
+              <Chip className={classes.chip} label={wifiNetwork.SECURITY} color="primary" />
             </Typography>
           </div>
           <InfoIcon className={classes.icon} color="primary" onClick={handleDialog} />
-          <WifiPopUp wifi_network={wifi_network} open={open} setOpen={setOpen} />
+          <WifiPopUp wifiNetwork={wifiNetwork} open={open} setOpen={setOpen} />
         </div>
       </div>
       <Divider />
