@@ -22,7 +22,7 @@ import { isDesktop } from './util/isDesktop';
 import CameraLoadWidget from './components/CameraLoadWidget.jsx';
 
 import Icon from '@material-ui/core/Icon';
-import CancelPresentationIcon from "@material-ui/icons/CancelPresentation";
+import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -159,11 +159,16 @@ export function App(props) {
             }}
           >
             <Typography variant="h5" align="center">
-               Current Camera Load
-          <Button style={{ float: "right" }} onClick={()=>{setmodalOpen(false)}}>
-            <CancelPresentationIcon />
-          </Button>
-        </Typography>
+              Current Camera Load
+              <Button
+                style={{ float: 'right' }}
+                onClick={() => {
+                  setmodalOpen(false);
+                }}
+              >
+                <CancelPresentationIcon />
+              </Button>
+            </Typography>
             <CameraLoadWidget />
           </div>
         </Modal>
