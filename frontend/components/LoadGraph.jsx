@@ -12,7 +12,7 @@ export default function LoadGraph() {
     data: [{}],
   };
 
-  const { data, randomizeData } = useDemoConfig({
+  const { data, updateData } = useDemoConfig({
     series: 3,
   });
 
@@ -58,7 +58,7 @@ export default function LoadGraph() {
           <Chart data={data} series={series} axes={axes} tooltip dark />
         </ResizableBox>
       </Box>
-      <Command command="uptime" interval={2000} randomizeData={randomizeData} />
+      <Command command="uptime" interval={2000} updateData={updateData} />
     </>
   );
 }

@@ -48,14 +48,14 @@ function extractLoadFromString(str = '') {
   ];
 }
 
-export function PlainCommand({ command, interval, children, randomizeData }) {
+export function PlainCommand({ command, interval, children, updateData }) {
   const [output, setOutput] = useState('');
   useEffect(() => {
     const callback = () =>
       exec(command)
         .then(result => {
           setOutput(result[0]);
-          if (randomizeData !== undefined) randomizeData(extractLoadFromString(result[0]));
+          if (updateData !== undefined) updateData(extractLoadFromString(result[0]));
         })
         .catch(err => setOutput(err[1]));
     const interval_handle = setInterval(callback, interval);

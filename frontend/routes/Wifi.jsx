@@ -86,7 +86,9 @@ function SortableTableHead(props) {
               <TableSortLabel
                 active={orderBy === key}
                 direction={orderBy === key ? order : 'asc'}
-                onClick={(event)=>{onRequestSort(event, key)}}
+                onClick={event => {
+                  onRequestSort(event, key);
+                }}
               >
                 <b>{headCells[key].label}</b>
                 {orderBy === key ? (

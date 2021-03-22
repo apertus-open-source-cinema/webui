@@ -47,7 +47,7 @@ export default function useChartConfig({
   show = [],
   count = 1,
   resizable = true,
-  canRandomize = true,
+  canRandomize = false,
   dataType = 'time',
   elementType = 'line',
   primaryAxisType = 'time',
@@ -106,7 +106,7 @@ export default function useChartConfig({
     }));
   }, [count, dataType, datums, series, useR]);
 
-  const randomizeData = new_data => {
+  const updateData = new_data => {
     if (new_data === undefined) return null;
 
     const temp_data = state;
@@ -149,7 +149,7 @@ export default function useChartConfig({
 
   return {
     ...state,
-    randomizeData,
+    updateData,
     Options,
   };
 }
