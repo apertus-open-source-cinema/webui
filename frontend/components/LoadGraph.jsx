@@ -4,6 +4,8 @@ import Chart from 'react-apexcharts';
 
 const command = 'uptime';
 const interval = 1000;
+const graph_height = 400;
+const graph_title = 'Load average';
 
 export default function LoadGraph() {
   const [state, setstate] = useState({
@@ -21,7 +23,6 @@ export default function LoadGraph() {
     let fifteen_min = parseFloat(list[4]);
 
     return {
-      x_value: new Date().getTime(),
       y_value: [one_min, five_min, fifteen_min],
       original_str: str,
     };
@@ -57,7 +58,7 @@ export default function LoadGraph() {
           padding: '1.5rem',
         }}
       >
-        <LoadChart data={state.data} title="Load averages" />
+        <LoadChart data={state.data} title={graph_title} />
       </Box>
 
       <pre style={{ backgroundColor: '#eee', overflowX: 'auto' }}>
@@ -70,7 +71,7 @@ export default function LoadGraph() {
 function LoadChart(props) {
   const options = {
     chart: {
-      height: 400,
+      height: graph_height,
       type: 'line',
       zoom: {
         enabled: true,
@@ -118,7 +119,7 @@ function LoadChart(props) {
 
   return (
     <div id="chart">
-      <Chart options={options} series={series} type="line" height={400} />
+      <Chart options={options} series={series} type="line" height={graph_height} />
     </div>
   );
 }
