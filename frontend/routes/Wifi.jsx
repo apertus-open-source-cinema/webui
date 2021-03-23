@@ -16,7 +16,7 @@ import Paper from '@material-ui/core/Paper';
 import { green, orange } from '@material-ui/core/colors';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Box, Chip } from '@material-ui/core';
-
+import {SignalWifi4Bar, SignalWifi0Bar, SignalWifi1Bar, SignalWifi2Bar, SignalWifi3Bar} from '@material-ui/icons';
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
 
@@ -57,6 +57,7 @@ export class Component extends React.Component {
 const in_use = 'IN-USE';
 const initial_direction = 'asc';
 const security = 'SECURITY';
+const bars = 'BARS';
 const active_color = orange[50];
 const headCells = {
   [in_use]: { numeric: false, disablePadding: true, label: 'Connected' },
@@ -212,6 +213,47 @@ function extractWPA(wpas) {
   return list;
 }
 
+function Bar2IconMapper(bars){
+  switch (bars) {
+    case '▂▄▆█':
+      return <SignalWifi4Bar />
+    case '▂▄▆_':
+      return <SignalWifi3Bar />
+    case '▂▄__':
+      return <SignalWifi2Bar />
+    case '▂___':
+      return <SignalWifi1Bar />
+    case '____':
+      return <SignalWifi0Bar />
+    default:
+      break;
+  }
+}
+
+function renderTableCell(key, row, classes){
+  if(key == in_use && row[key].length > 0){
+    return       <Skeleton
+    variant="circle"
+    width={10}
+    height={10}
+    style={{
+      background: green.A200,
+      alignContent: 'center',
+      padding: 0,
+    }}
+  />
+  }
+  else if(key == security){
+    return <div className={classes.chips}>{extractWPA(row[security])}</div>
+  }
+  else if(key == bars){
+    return Bar2IconMapper(row[key]);
+  }
+  else{
+    return row[key]
+  }
+}
+
 function SortableTable(props) {
   const classes = useStyles();
   const [order, setOrder] = useState(initial_direction);
@@ -250,24 +292,7 @@ function SortableTable(props) {
                     {Object.keys(headCells).map(function(key) {
                       return (
                         <TableCell key={key} align="center">
-                          {key == in_use ? (
-                            row[key].length > 0 ? (
-                              <Skeleton
-                                variant="circle"
-                                width={10}
-                                height={10}
-                                style={{
-                                  background: green.A200,
-                                  alignContent: 'center',
-                                  padding: 0,
-                                }}
-                              />
-                            ) : null
-                          ) : key == security ? (
-                            <div className={classes.chips}>{extractWPA(row[security])}</div>
-                          ) : (
-                            row[key]
-                          )}
+                          {renderTableCell(key, row, classes)}
                         </TableCell>
                       );
                     })}
