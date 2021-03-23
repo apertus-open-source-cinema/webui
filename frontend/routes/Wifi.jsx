@@ -16,7 +16,13 @@ import Paper from '@material-ui/core/Paper';
 import { green, orange } from '@material-ui/core/colors';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Box, Chip } from '@material-ui/core';
-import {SignalWifi4Bar, SignalWifi0Bar, SignalWifi1Bar, SignalWifi2Bar, SignalWifi3Bar} from '@material-ui/icons';
+import {
+  SignalWifi4Bar,
+  SignalWifi0Bar,
+  SignalWifi1Bar,
+  SignalWifi2Bar,
+  SignalWifi3Bar,
+} from '@material-ui/icons';
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
 
@@ -213,44 +219,43 @@ function extractWPA(wpas) {
   return list;
 }
 
-function Bar2IconMapper(bars){
+function Bar2IconMapper(bars) {
   switch (bars) {
     case '▂▄▆█':
-      return <SignalWifi4Bar />
+      return <SignalWifi4Bar />;
     case '▂▄▆_':
-      return <SignalWifi3Bar />
+      return <SignalWifi3Bar />;
     case '▂▄__':
-      return <SignalWifi2Bar />
+      return <SignalWifi2Bar />;
     case '▂___':
-      return <SignalWifi1Bar />
+      return <SignalWifi1Bar />;
     case '____':
-      return <SignalWifi0Bar />
+      return <SignalWifi0Bar />;
     default:
       break;
   }
 }
 
-function renderTableCell(key, row, classes){
-  if(key == in_use && row[key].length > 0){
-    return       <Skeleton
-    variant="circle"
-    width={10}
-    height={10}
-    style={{
-      background: green.A200,
-      alignContent: 'center',
-      padding: 0,
-    }}
-  />
-  }
-  else if(key == security){
-    return <div className={classes.chips}>{extractWPA(row[security])}</div>
-  }
-  else if(key == bars){
+function renderTableCell(key, row, classes) {
+  if (key == in_use && row[key].length > 0) {
+    return (
+      <Skeleton
+        variant="circle"
+        width={10}
+        height={10}
+        style={{
+          background: green.A200,
+          alignContent: 'center',
+          padding: 0,
+        }}
+      />
+    );
+  } else if (key == security) {
+    return <div className={classes.chips}>{extractWPA(row[security])}</div>;
+  } else if (key == bars) {
     return Bar2IconMapper(row[key]);
-  }
-  else{
-    return row[key]
+  } else {
+    return row[key];
   }
 }
 
