@@ -9,9 +9,8 @@ export function Command({ command, output, children }) {
 }
 
 export function PlainCommand({ children, output }) {
-  if(!output)
-    return null;
-    
+  if (!output) return null;
+
   if (children === undefined) {
     return <>{output}</>;
   } else if (typeof children === 'function') {

@@ -24,23 +24,16 @@ export default function RunCommand(props) {
     let fifteen_min = parseFloat(list[4]);
 
     return {
-      x_value: new Date(),
       y_value: [one_min, five_min, fifteen_min],
       original_str: str,
     };
   }
 
   function updateData(new_data) {
-    
-    setstate(prevstate => ({
-      labels: [...prevstate.labels, new_data.x_value],
-      data: [
-        [new_data.y_value[0]],
-        [new_data.y_value[1]],
-        [new_data.y_value[2]],
-      ],
+    setstate({
+      data: [[new_data.y_value[0]], [new_data.y_value[1]], [new_data.y_value[2]]],
       output: new_data.original_str,
-    }));
+    });
   }
 
   useEffect(() => {
@@ -62,13 +55,13 @@ export default function RunCommand(props) {
 
   return (
     <div>
-      {(props.showGraph !== undefined && props.command === uptime_cmd)? (
+      {props.showGraph !== undefined && props.command === uptime_cmd ? (
         <Box
           style={{
             padding: '1.5rem',
           }}
         >
-          <LoadChartWidget labels={state.labels} data={state.data} title={graph_title} />
+          <LoadChartWidget data={state.data} title={graph_title} />
         </Box>
       ) : null}
 
