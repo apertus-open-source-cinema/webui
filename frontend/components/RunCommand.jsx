@@ -31,12 +31,13 @@ export default function RunCommand(props) {
   }
 
   function updateData(new_data) {
+    
     setstate(prevstate => ({
       labels: [...prevstate.labels, new_data.x_value],
       data: [
-        [...prevstate.data[0], new_data.y_value[0]],
-        [...prevstate.data[1], new_data.y_value[1]],
-        [...prevstate.data[2], new_data.y_value[2]],
+        [new_data.y_value[0]],
+        [new_data.y_value[1]],
+        [new_data.y_value[2]],
       ],
       output: new_data.original_str,
     }));

@@ -1,5 +1,6 @@
 import Chart from 'react-apexcharts';
-import React from 'react';
+import React , { useEffect } from 'react';
+import ApexCharts from "apexcharts";
 
 const graph_height = 400;
 
@@ -11,6 +12,7 @@ export default function LoadChartWidget(props) {
       zoom: {
         enabled: true,
       },
+      id:'load_chart'
     },
     dataLabels: {
       enabled: false,
@@ -35,29 +37,46 @@ export default function LoadChartWidget(props) {
         stops: [0, 30],
       },
     },
-    xaxis: {
-      type: 'time',
-      labels: {
-        show: false,
-      },
-      categories : props.labels
-    },
+
   };
 
   const series = [
     {
-      name: '1 minute',
-      data: props.data[0],
+      name : '1 minute',
+      data : []
     },
     {
-      name: '5 minute',
-      data: props.data[1],
+      name : '5 minute',
+      data : []
     },
     {
-      name: '15 minute',
-      data: props.data[2],
-    },
+      name : '15 mintue',
+      data : []
+    }
   ];
+
+  useEffect(() => {
+    ApexCharts.exec('load_chart', 'updateOptions', {
+      xaxis: {
+        labels: {
+          show: false
+        }
+      },
+    });
+
+    ApexCharts.exec('load_chart', 'appendData', [
+      {
+        data: props.data[0]
+      },
+      {
+        data: props.data[1]
+      },
+      {
+        data: props.data[2]
+      },
+
+  ]);
+  })
 
   return (
     <div id="chart">
