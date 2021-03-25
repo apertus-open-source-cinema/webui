@@ -1,26 +1,17 @@
-import { default as React, useEffect, useState } from 'react';
-import { exec } from '../util/exec';
+import React from 'react';
 
-export function Command(props) {
+export function Command({ command, output, children }) {
   return (
     <pre style={{ backgroundColor: '#eee', overflowX: 'auto' }}>
-      $ {props.command} {`\n`} <PlainCommand {...props} />
+      $ {command} {`\n`} <PlainCommand children={children} output={output} />
     </pre>
   );
 }
 
-export function PlainCommand({ command, interval, children }) {
-  const [output, setOutput] = useState('');
-  useEffect(() => {
-    const callback = () =>
-      exec(command)
-        .then(result => setOutput(result[0]))
-        .catch(err => setOutput(err[1]));
-    const interval_handle = setInterval(callback, interval);
-    callback();
-    return () => clearInterval(interval_handle);
-  }, [command]);
-
+export function PlainCommand({ children, output }) {
+  if(!output)
+    return null;
+    
   if (children === undefined) {
     return <>{output}</>;
   } else if (typeof children === 'function') {
