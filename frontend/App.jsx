@@ -9,20 +9,14 @@ import {
   IconButton,
 } from '@material-ui/core';
 import List from '@material-ui/core/List';
-import Modal from '@material-ui/core/Modal';
 import { Link as RouterLink, Switch, Route } from 'react-router-dom';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
-import Button from '@material-ui/core/Button';
 import { useState } from 'react';
 import clsx from 'clsx';
 import { isDesktop } from './util/isDesktop';
-import CameraLoadWidget from './components/CameraLoadWidget.jsx';
-
-import Icon from '@material-ui/core/Icon';
-import CancelPresentationIcon from '@material-ui/icons/CancelPresentation';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -69,8 +63,7 @@ export function App(props) {
   const classes = useStyles();
 
   const [drawerOpen, setDrawerOpen] = useState(isDesktop);
-  const [modalOpen, setmodalOpen] = useState(false);
-
+  console.log(props.theme.palette.primary.main);
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -118,17 +111,6 @@ export function App(props) {
             />
           ))}
         </List>
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<Icon>send</Icon>}
-          onClick={() => {
-            setmodalOpen(true);
-          }}
-          style={{ margin: '10px' }}
-        >
-          Camera Load
-        </Button>
       </Drawer>
 
       <div
@@ -137,41 +119,6 @@ export function App(props) {
         })}
       >
         <div className={classes.toolbar} />
-        <Modal
-          open={modalOpen}
-          onClose={() => {
-            setmodalOpen(false);
-          }}
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              overflow: 'scroll',
-              width: 400,
-              backgroundColor: 'white',
-              border: '1px solid black',
-              padding: '20px',
-            }}
-          >
-            <Typography variant="h5" align="center">
-              Current Camera Load
-              <Button
-                style={{ float: 'right' }}
-                onClick={() => {
-                  setmodalOpen(false);
-                }}
-              >
-                <CancelPresentationIcon />
-              </Button>
-            </Typography>
-            <CameraLoadWidget />
-          </div>
-        </Modal>
 
         <Switch>
           {Object.values(routes).map(({ route, Component }) => (

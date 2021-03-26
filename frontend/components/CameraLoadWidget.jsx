@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 
 import { exec } from '../util/exec';
 
-import Bar from '../util/Bar';
+import Chart from 'react-google-charts';
 
 const CameraLoadWidget = props => {
-  let [load, setLoad] = useState([0, 0, 0]);
+  const [load, setLoad] = useState([
+    ['Time Lapsed(In seconds)', '1 minute avg', '5 minute avg', '15 minute avg'],
+    [0, 0, 0, 0],
+  ]);
   useEffect(() => {
-    setInterval(() => {
+    let intervalId = setInterval(function a() {
       exec('uptime').then(result => {
         let splitres = String(result)
           .trim()
@@ -15,20 +18,34 @@ const CameraLoadWidget = props => {
           .trim()
           .split(',');
 
-        let loadArr = [
-          { index: 0, date: 0, value: splitres[0].trim() },
-          { index: 1, date: 1, value: splitres[1].trim() },
-          { index: 2, date: 2, value: splitres[2].trim() },
-        ];
-
-        setLoad(loadArr);
+        setLoad(oldLoad => {
+          let loadArr = [
+            [
+              oldLoad[oldLoad.length - 1][0] + 1,
+              splitres[0].trim(),
+              splitres[1].trim(),
+              splitres[2].trim(),
+            ],
+          ];
+          return oldLoad.concat(loadArr);
+        });
       });
     }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   return (
     <p>
-      <Bar data={load} width={300} height={200} top={20} bottom={30} left={30} right={0} />
+      <Chart
+        height={'400px'}
+        chartType="Line"
+        loader={<div>Loading Chart</div>}
+        data={load}
+        rootProps={{ 'data-testid': '2' }}
+      />
     </p>
   );
 };

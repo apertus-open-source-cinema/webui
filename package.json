@@ -14,11 +14,10 @@
     "last 10 Firefox versions"
   ],
   "dependencies": {
-    "d3": "^6.6.0",
+    "@material-table/core": "^2.3.28",
     "express": "~4.17.1",
     "material-table": "^1.69.2",
-    "react-chartjs-2": "^2.11.1",
-    "react-d3-graph": "^2.6.0",
+    "react-google-charts": "^3.0.15",
     "socketio": "^1.0.0"
   },
   "devDependencies": {
@@ -33,7 +32,7 @@
     "morgan": "~1.9.1",
     "parcel": "^1.12.4",
     "prettier": "^1.19.1",
-    "react": "^16.8.0 || ^17.0.0",
+    "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
     "react-router-dom": "^5.1.2",
