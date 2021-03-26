@@ -16,10 +16,10 @@ export default function LoadChartWidget(props) {
       },
       id: 'load_chart',
     },
-    noData : {
-      text : 'Loading...',
-      align : 'center',
-      verticalAlign : 'middle'
+    noData: {
+      text: 'Loading...',
+      align: 'center',
+      verticalAlign: 'middle',
     },
     dataLabels: {
       enabled: false,
@@ -44,8 +44,6 @@ export default function LoadChartWidget(props) {
         stops: [0, 30],
       },
     },
-
-
   };
 
   const series = [
@@ -64,18 +62,16 @@ export default function LoadChartWidget(props) {
   ];
 
   useEffect(() => {
-
     ApexCharts.exec('load_chart', 'updateOptions', {
       xaxis: {
         labels: {
-          show: false
+          show: false,
         },
-        axisTicks : {
-          show : false
+        axisTicks: {
+          show: false,
         },
-        categories : props.labels
+        categories: props.labels,
       },
-
     });
 
     ApexCharts.exec('load_chart', 'appendData', [
@@ -91,7 +87,5 @@ export default function LoadChartWidget(props) {
     ]);
   });
 
-  return (
-      <Chart options={options} series={series} type="line" height={graphHeight} />
-  );
+  return <Chart options={options} series={series} type="line" height={graphHeight} />;
 }

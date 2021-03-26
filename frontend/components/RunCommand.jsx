@@ -7,7 +7,7 @@ const uptime_cmd = 'uptime';
 const graph_title = 'Load average';
 
 export default function RunCommand(props) {
-  const [state, setstate] = useState({
+  const [state, setState] = useState({
     labels: [],
     data: [[], [], []],
     output: '',
@@ -21,19 +21,17 @@ export default function RunCommand(props) {
     let fifteen_min = parseFloat(list[4]);
 
     return {
-      x_value : time_stamp,
-      y_value : [one_min, five_min, fifteen_min],
-      original_str : str,
+      x_value: time_stamp,
+      y_value: [one_min, five_min, fifteen_min],
+      original_str: str,
     };
   }
 
   function updateData(new_data) {
-    // console.log(state.labels);
-    // console.log(new_data.x_value);
-    setstate(prevState => ({
+    setState({
       data: [[new_data.y_value[0]], [new_data.y_value[1]], [new_data.y_value[2]]],
       output: new_data.original_str,
-    }));
+    });
   }
 
   useEffect(() => {
@@ -42,7 +40,7 @@ export default function RunCommand(props) {
         .then(result => {
           if (props.showGraph) updateData(extractLoadFromString(result[0]));
           else
-            setstate(prevState => ({
+            setState(prevState => ({
               ...prevState,
               output: result[0],
             }));
