@@ -49,7 +49,7 @@ export default function RunCommand(props) {
     const interval_handle = setInterval(callback, props.interval);
     callback();
     return () => clearInterval(interval_handle);
-  }, [props.command]);
+  }, [props.command, props.showGraph]);
 
   return (
     <div>
