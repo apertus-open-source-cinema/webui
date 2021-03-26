@@ -44,7 +44,7 @@ export async function exec_table(command, skip_lines, header_row, separator, str
 
   if (!header_row) {
     header_row = trimmed_fields[0];
-    trimmed_fields = trimmed_fields.slice(1, lines.length - 1);
+    trimmed_fields = trimmed_fields.slice(1, lines.length);
   }
 
   const result = trimmed_fields.map(l => {
