@@ -2,17 +2,24 @@ import Chart from 'react-apexcharts';
 import React, { useEffect } from 'react';
 import ApexCharts from 'apexcharts';
 
-const graph_height = 400;
+const graphHeight = 400;
 
 export default function LoadChartWidget(props) {
   const options = {
+    redrawOnWindowResize: false,
+    redrawOnParentResize: false,
     chart: {
-      height: graph_height,
+      height: graphHeight,
       type: 'line',
       zoom: {
         enabled: true,
       },
       id: 'load_chart',
+    },
+    noData : {
+      text : 'Loading...',
+      align : 'center',
+      verticalAlign : 'middle'
     },
     dataLabels: {
       enabled: false,
@@ -37,6 +44,8 @@ export default function LoadChartWidget(props) {
         stops: [0, 30],
       },
     },
+
+
   };
 
   const series = [
@@ -49,18 +58,24 @@ export default function LoadChartWidget(props) {
       data: [],
     },
     {
-      name: '15 mintue',
+      name: '15 minute',
       data: [],
     },
   ];
 
   useEffect(() => {
+
     ApexCharts.exec('load_chart', 'updateOptions', {
       xaxis: {
         labels: {
-          show: false,
+          show: false
         },
+        axisTicks : {
+          show : false
+        },
+        categories : props.labels
       },
+
     });
 
     ApexCharts.exec('load_chart', 'appendData', [
@@ -77,8 +92,6 @@ export default function LoadChartWidget(props) {
   });
 
   return (
-    <div id="chart">
-      <Chart options={options} series={series} type="line" height={graph_height} />
-    </div>
+      <Chart options={options} series={series} type="line" height={graphHeight} />
   );
 }

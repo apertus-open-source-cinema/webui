@@ -4,7 +4,6 @@ import { Command } from './CommandWidgets';
 import LoadChartWidget from './LoadChartWidget';
 
 const uptime_cmd = 'uptime';
-
 const graph_title = 'Load average';
 
 export default function RunCommand(props) {
@@ -15,25 +14,26 @@ export default function RunCommand(props) {
   });
 
   function extractLoadFromString(str = '') {
-    let list = str.split(',').map(ele => {
-      return ele.trim();
-    });
-
+    let list = str.split(',');
+    let time_stamp = list[0].trim();
     let one_min = parseFloat(list[2].split(':')[1]);
     let five_min = parseFloat(list[3]);
     let fifteen_min = parseFloat(list[4]);
 
     return {
-      y_value: [one_min, five_min, fifteen_min],
-      original_str: str,
+      x_value : time_stamp,
+      y_value : [one_min, five_min, fifteen_min],
+      original_str : str,
     };
   }
 
   function updateData(new_data) {
-    setstate({
+    // console.log(state.labels);
+    // console.log(new_data.x_value);
+    setstate(prevState => ({
       data: [[new_data.y_value[0]], [new_data.y_value[1]], [new_data.y_value[2]]],
       output: new_data.original_str,
-    });
+    }));
   }
 
   useEffect(() => {
