@@ -43,6 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
   chip: {
     height: '30px',
+    paddingTop: '2px',
   },
 }));
 
@@ -68,14 +69,19 @@ export const WifiDetails = ({ wifiNetwork }) => {
             <Typography>{wifiNetwork.BSSID}</Typography>
             <div className={classes.container}>
               <Typography component="div">
-                {wifiNetwork.SECURITY === 'WPA1 WPA2' ? (
+                <div className={classes.row}>
+                  {wifiNetwork.SECURITY.split(' ').map(security => (
+                    <Chip className={classes.chip} label={security} color="primary" />
+                  ))}
+                </div>
+                {/* {wifiNetwork.SECURITY === 'WPA1 WPA2' ? (
                   <div className={classes.row}>
                     <Chip className={classes.chip} label={'WPA1'} color="primary" />
                     <Chip className={classes.chip} label={'WPA2'} color="primary" />
                   </div>
                 ) : (
                   <Chip className={classes.chip} label={wifiNetwork.SECURITY} color="primary" />
-                )}
+                )} */}
               </Typography>
             </div>
           </div>
