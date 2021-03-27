@@ -53,16 +53,6 @@ export default function RunCommand(props) {
 
   return (
     <div>
-      {props.showGraph !== undefined && props.command === uptime_cmd ? (
-        <Box
-          style={{
-            padding: '1.5rem',
-          }}
-        >
-          <LoadChartWidget data={state.data} title={graph_title} />
-        </Box>
-      ) : null}
-
       <Command command={props.command} output={state.output} children={props.children} />
     </div>
   );
