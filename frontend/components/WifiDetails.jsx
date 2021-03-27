@@ -8,7 +8,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   row: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -70,18 +70,10 @@ export const WifiDetails = ({ wifiNetwork }) => {
             <div className={classes.container}>
               <Typography component="div">
                 <div className={classes.row}>
-                  {wifiNetwork.SECURITY.split(' ').map(security => (
+                  {wifiNetwork.SECURITY.split(' ').map((security) => (
                     <Chip className={classes.chip} label={security} color="primary" />
                   ))}
                 </div>
-                {/* {wifiNetwork.SECURITY === 'WPA1 WPA2' ? (
-                  <div className={classes.row}>
-                    <Chip className={classes.chip} label={'WPA1'} color="primary" />
-                    <Chip className={classes.chip} label={'WPA2'} color="primary" />
-                  </div>
-                ) : (
-                  <Chip className={classes.chip} label={wifiNetwork.SECURITY} color="primary" />
-                )} */}
               </Typography>
             </div>
           </div>
