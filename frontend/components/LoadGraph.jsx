@@ -51,12 +51,6 @@ const chart_config = {
       y: {
         beginAtZero: true,
       },
-      x: {
-        type: 'time',
-        time: {
-          unit: 'second',
-        },
-      },
     },
     elements: {
       line: {
