@@ -1,8 +1,38 @@
 import * as React from 'react';
 import { exec_table, exec } from '../util/exec';
 
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Tablee from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 500,
+  },
+});
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
 export class Component extends React.Component {
   constructor(props) {
@@ -27,27 +57,32 @@ export class Component extends React.Component {
   }
 }
 
+
 function Table(props) {
+  const classes = useStyles()
   const { data } = props;
+
   if (data.length === 0) return <table />;
   return (
-    <table>
-      <thead>
-        <tr>
-          {Object.keys(data[0]).map(s => (
-            <th key={s}>{s}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((row, i) => (
-          <tr key={i}>
-            {Object.values(row).map((s, i) => (
-              <td key={i}>{s}</td>
+    <TableContainer component={Paper}>
+      <Tablee className={classes.table} aria-label="simple table">
+        <TableHead>
+          <StyledTableRow>
+            {Object.keys(data[0]).map(s => (
+              <StyledTableCell key={s}>{s}</StyledTableCell>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+          </StyledTableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row, i) => (
+            <StyledTableRow align="right" key={i}>
+              {Object.values(row).map((s, i) => (
+                <StyledTableCell key={i}>{s}</StyledTableCell>
+              ))}
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Tablee>
+    </TableContainer>
   );
 }
