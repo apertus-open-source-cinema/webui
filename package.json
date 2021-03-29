@@ -16,10 +16,9 @@
   "dependencies": {
     "@material-ui/lab": "^4.0.0-alpha.57",
     "apexcharts": "^3.26.0",
-    "canvasjs-react-charts": "^1.0.5",
+    "chart.js": "^2.9.4",
+    "chartjs-plugin-zoom": "^0.7.7",
     "express": "~4.17.1",
-    "react-apexcharts": "^1.3.7",
-    "react-resizable": "^1.11.1",
     "socketio": "^1.0.0"
   },
   "devDependencies": {
