@@ -41,6 +41,7 @@ const chart_config = {
     title: {
       display: true,
       text: chart_title,
+      fontSize: 16,
     },
     hover: {
       animationDuration: 0,
@@ -49,7 +50,6 @@ const chart_config = {
     scales: {
       y: {
         beginAtZero: true,
-        suggestedMax: 50,
       },
       x: {
         type: 'time',
@@ -94,11 +94,11 @@ export default function LoadGraph() {
   }
 
   function extractLoadFromString(str = '') {
-    let list = str.split(',');
-    let time_stamp = list[0].trim();
-    let one_min = parseFloat(list[2].split(':')[1]);
-    let five_min = parseFloat(list[3]);
-    let fifteen_min = parseFloat(list[4]);
+    const list = str.split(',');
+    const time_stamp = list[0].trim();
+    const one_min = parseFloat(list[2].split(':')[1]);
+    const five_min = parseFloat(list[3]);
+    const fifteen_min = parseFloat(list[4]);
 
     return {
       x_value: time_stamp,
@@ -122,7 +122,6 @@ export default function LoadGraph() {
   }, []);
 
   function resetZoom() {
-    console.log('hello');
     if (chart == null) {
       console.log('Chart is not defined/initialized');
       return;
