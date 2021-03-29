@@ -9,6 +9,7 @@ var chart = null;
 const update_interval = 1000;
 const command = 'uptime';
 const chart_title = 'Load Averages';
+
 const chart_config = {
   type: 'line',
   data: {
@@ -17,22 +18,22 @@ const chart_config = {
       {
         label: '1 minute',
         data: [],
-        backgroundColor: ['rgba(255, 100, 100, 0.1)'],
-        borderColor: [orange.A100],
+        backgroundColor: 'rgba(255, 100, 100, 0.1)',
+        borderColor: orange.A100,
         borderWidth: 1.5,
       },
       {
         label: '5 minute',
         data: [],
-        backgroundColor: ['rgba(50, 255, 50, 0.1)'],
-        borderColor: [green.A100],
+        backgroundColor: 'rgba(50, 255, 50, 0.1)',
+        borderColor: green.A200,
         borderWidth: 1.5,
       },
       {
         label: '15 minute',
         data: [],
-        backgroundColor: ['rgba(100, 100, 255, 0.1)'],
-        borderColor: [blue.A100],
+        backgroundColor: 'rgba(100, 100, 255, 0.1)',
+        borderColor: blue.A100,
         borderWidth: 1.5,
       },
     ],
