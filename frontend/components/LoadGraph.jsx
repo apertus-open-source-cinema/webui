@@ -1,144 +1,79 @@
-import Chart from 'chart.js';
-import React, { createRef, useEffect } from 'react';
-import 'chartjs-plugin-zoom';
-import { Button } from '@material-ui/core';
-import RotateLeftIcon from '@material-ui/icons/RotateLeft';
-import { blue, green, orange } from '@material-ui/core/colors';
+import React, { useEffect, useRef } from 'react';
+import Dygraph from 'dygraphs';
+import { Box } from '@material-ui/core';
+import { blue, green, red } from '@material-ui/core/colors';
 
-var chart = null;
 const update_interval = 1000;
 const command = 'uptime';
 const chart_title = 'Load Averages';
-
 const chart_config = {
-  type: 'line',
-  data: {
-    labels: [],
-    datasets: [
-      {
-        label: '1 minute',
-        data: [],
-        backgroundColor: 'rgba(255, 100, 100, 0.1)',
-        borderColor: orange.A100,
-        borderWidth: 1.5,
-      },
-      {
-        label: '5 minute',
-        data: [],
-        backgroundColor: 'rgba(50, 255, 50, 0.1)',
-        borderColor: green.A200,
-        borderWidth: 1.5,
-      },
-      {
-        label: '15 minute',
-        data: [],
-        backgroundColor: 'rgba(100, 100, 255, 0.1)',
-        borderColor: blue.A100,
-        borderWidth: 1.5,
-      },
-    ],
+  legend: 'always',
+  labelsSeparateLines: true,
+  colors: [red.A200, green.A200, blue.A200],
+  strokeWidth: 1.5,
+  title: chart_title,
+  titleHeight: 26,
+  xlabel: 'Time',
+  xLabelHeight: 18,
+};
+
+const chartStyles = {
+  tooltip: {
+    margin: '0.5rem',
+    flex: 1,
   },
-  options: {
-    title: {
-      display: true,
-      text: chart_title,
-      fontSize: 16,
-    },
-    hover: {
-      animationDuration: 0,
-    },
-    responsiveAnimationDuration: 0,
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-    elements: {
-      line: {
-        tension: 0,
-      },
-    },
-    tooltips: {
-      mode: 'x',
-    },
-    plugins: {
-      zoom: {
-        zoom: {
-          enabled: true,
-          mode: 'x',
-        },
-        pan: {
-          enabled: true,
-          mode: 'x',
-        },
-      },
-    },
+  chart: {
+    width: '700px',
+    height: '350px',
+    flex: 4,
+  },
+  box_wrapper: {
+    margin: '1rem',
+    marginBottom: '1.5rem',
+    display: 'flex',
+    fontFamily: 'Arial, Helvetica, sans-serif',
   },
 };
 
-export default function LoadGraph() {
-  const chartRef = createRef();
+let data = 'date, 1 minute, 5 minute, 15 minute\n';
+let chart = null;
+export default function LoadGraph(props) {
+  const chartRef = useRef();
+  const tooltip_ref = useRef();
 
-  function updateData(obj) {
-    if (chart == null) return;
-    chart.data.labels.push(obj.x_value);
-    chart.data.datasets.forEach((dataset, idx) => {
-      dataset.data.push(obj.y_value[idx]);
-    });
-    chart.update();
-  }
-
-  function extractLoadFromString(str = '') {
-    const list = str.split(',');
-    const time_stamp = list[0].trim();
-    const one_min = parseFloat(list[2].split(':')[1]);
-    const five_min = parseFloat(list[3]);
-    const fifteen_min = parseFloat(list[4]);
-
-    return {
-      x_value: time_stamp,
-      y_value: [one_min, five_min, fifteen_min],
-      original_str: str,
-    };
+  function addData(str = '') {
+    if (str.length == 0) return;
+    const list = str.split('load average: ');
+    data += `${new Date()}, ${list[1].trim()}\n`;
+    const row = chart.getSelection();
+    chart.updateOptions({ file: data });
+    chart.setSelection(row);
   }
 
   useEffect(() => {
-    chart = new Chart(chartRef.current, chart_config);
+    chart = new Dygraph(chartRef.current, data, {
+      ...chart_config,
+      labelsDiv: tooltip_ref.current,
+    });
 
     const callback = () =>
       exec(command)
         .then(result => {
-          updateData(extractLoadFromString(result[0]));
+          addData(result[0]);
         })
         .catch(err => console.log(err[1]));
-    const interval_handle = setInterval(callback, update_interval);
+    const interval_handle = setInterval(
+      callback,
+      props.interval ? props.interval : update_interval
+    );
     callback();
     return () => clearInterval(interval_handle);
   }, []);
 
-  function resetZoom() {
-    if (chart == null) {
-      console.log('Chart is not defined/initialized');
-      return;
-    }
-    chart.resetZoom();
-  }
-
   return (
-    <div>
-      <Button
-        variant="outlined"
-        color="primary"
-        size="small"
-        onClick={resetZoom}
-        style={{
-          margin: '0.5rem',
-        }}
-        endIcon={<RotateLeftIcon />}
-      >
-        Reset Zoom
-      </Button>
-      <canvas ref={chartRef} id="myChart" width="400" height="200"></canvas>
-    </div>
+    <Box style={chartStyles.box_wrapper}>
+      <div ref={chartRef} style={chartStyles.chart} />
+      <div ref={tooltip_ref} style={chartStyles.tooltip} />
+    </Box>
   );
 }
