@@ -16,6 +16,8 @@ import Paper from '@material-ui/core/Paper';
 import { green, orange } from '@material-ui/core/colors';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Box, Chip } from '@material-ui/core';
+import "@lottiefiles/lottie-player";
+const wifi_animation = require("../util/animations/wifi_loading.json");
 import {
   SignalWifi4Bar,
   SignalWifi0Bar,
@@ -25,6 +27,8 @@ import {
 } from '@material-ui/icons';
 export const title = 'Wifi Configuration';
 export const route = '/wifi';
+import { useTheme } from '@material-ui/core/styles';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 export class Component extends React.Component {
   constructor(props) {
@@ -64,7 +68,6 @@ const in_use = 'IN-USE';
 const initial_direction = 'asc';
 const security = 'SECURITY';
 const bars = 'BARS';
-const active_color = orange[50];
 const headCells = {
   [in_use]: { numeric: false, disablePadding: true, label: 'Connected' },
   BSSID: { numeric: false, disablePadding: false, label: 'BSSID' },
@@ -79,6 +82,7 @@ const headCells = {
 
 function SortableTableHead(props) {
   const { classes, order, orderBy, onRequestSort } = props;
+
   return (
     <TableHead>
       <TableRow>
@@ -271,43 +275,68 @@ function SortableTable(props) {
     setOrderBy(property);
   };
 
+  const theme = useTheme();
+
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <SortableTableToolbar />
-        <TableContainer>
-          <Table className={classes.table} aria-labelledby="tableTitle" aria-label="sortable table">
-            <SortableTableHead
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
-                return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={index}
-                    style={{
-                      background: row[in_use].length > 0 ? active_color : null,
-                    }}
-                  >
-                    {Object.keys(headCells).map(function(key) {
-                      return (
-                        <TableCell key={key} align="center">
-                          {renderTableCell(key, row, classes)}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      {rows.length > 0 ? (
+        <Paper className={classes.paper}>
+          <SortableTableToolbar />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              aria-label="sortable table"
+            >
+              <SortableTableHead
+                classes={classes}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy)).map((row, index) => {
+                  return (
+                    <TableRow
+                      hover
+                      tabIndex={-1}
+                      key={index}
+                      style={{
+                        background: row[in_use].length > 0 ? orange[50] : null,
+                      }}
+                    >
+                      {Object.keys(headCells).map(function(key) {
+                        return (
+                          <TableCell key={key} align="center">
+                            {renderTableCell(key, row, classes)}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      ) : (
+        <div
+          style={{
+            height: '100%',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            display: 'flex',
+          }}
+        >
+          <Player
+          src={wifi_animation}
+          autoplay={true}
+          loop={true}
+          controls={false}
+          style={{ height: '300px', width: '300px' }}/>
+        </div>
+      )}
     </div>
   );
 }
