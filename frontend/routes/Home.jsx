@@ -14,7 +14,10 @@ import { Link, Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'markdown-to-jsx';
 import { routes } from '../*/*.jsx';
 import { PlainCommand } from '../components/CommandWidgets';
+import { Player } from '@lottiefiles/react-lottie-player';
+import '@lottiefiles/lottie-player';
 
+const apertus_animation = require('../util/animations/aperture.json');
 export const title = 'Home';
 export const route = '/';
 export const position = 1;
@@ -24,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
   heroContent: {
-    padding: theme.spacing(12, 0, 6),
+    padding: theme.spacing(0, 0, 6),
   },
   cardGrid: {
     paddingTop: theme.spacing(8),
@@ -57,6 +60,13 @@ export function Component(props) {
     <div>
       <div className={classes.heroContent}>
         <Container maxWidth="sm">
+          <Player
+            src={apertus_animation}
+            autoplay={true}
+            loop={true}
+            controls={false}
+            style={{ height: '200px', width: '200px', alignItems: 'center', display: 'flex' }}
+          />
           <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
             AXIOM <br />
             WebUI
