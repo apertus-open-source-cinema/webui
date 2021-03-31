@@ -16,8 +16,8 @@ import Paper from '@material-ui/core/Paper';
 import { green, orange } from '@material-ui/core/colors';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { Box, Chip } from '@material-ui/core';
-import "@lottiefiles/lottie-player";
-const wifi_animation = require("../util/animations/wifi_loading.json");
+import '@lottiefiles/lottie-player';
+const wifi_animation = require('../util/animations/wifi_loading.json');
 import {
   SignalWifi4Bar,
   SignalWifi0Bar,
@@ -330,11 +330,12 @@ function SortableTable(props) {
           }}
         >
           <Player
-          src={wifi_animation}
-          autoplay={true}
-          loop={true}
-          controls={false}
-          style={{ height: '300px', width: '300px' }}/>
+            src={wifi_animation}
+            autoplay={true}
+            loop={true}
+            controls={false}
+            style={{ height: '300px', width: '300px' }}
+          />
         </div>
       )}
     </div>
