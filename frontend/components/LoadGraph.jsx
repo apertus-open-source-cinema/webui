@@ -12,20 +12,20 @@ const chart_config = {
   colors: [red.A200, green.A200, blue.A200],
   strokeWidth: 1.5,
   title: chart_title,
-  titleHeight: 26,
-  xlabel: 'Time',
-  xLabelHeight: 18,
+  titleHeight: 24,
+  xlabel: 'Time(s)',
+  xLabelHeight: 16,
 };
-
 const chartStyles = {
   tooltip: {
     margin: '0.5rem',
     flex: 1,
+    width: '100%',
   },
   chart: {
-    width: '700px',
+    width: '100%',
     height: '350px',
-    flex: 4,
+    flex: 5,
   },
   box_wrapper: {
     margin: '1rem',
@@ -37,6 +37,7 @@ const chartStyles = {
 
 let data = 'date, 1 minute, 5 minute, 15 minute\n';
 let chart = null;
+
 export default function LoadGraph(props) {
   const chartRef = useRef();
   const tooltip_ref = useRef();
