@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -68,7 +69,7 @@ export function Component(props) {
   const rerender = () => setRerenderDep(rerenderDep + 1);
 
   return (
-    <div>
+    <Box>
       {
         <EditDashboard
           current_yml={yaml}
@@ -104,7 +105,7 @@ export function Component(props) {
           );
         })}
       </div>
-    </div>
+    </Box>
   );
 }
 

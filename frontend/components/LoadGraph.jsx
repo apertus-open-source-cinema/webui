@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import Dygraph from 'dygraphs';
 import { Container, makeStyles, Paper } from '@material-ui/core';
 import { blue, green, red } from '@material-ui/core/colors';
+import { Alert } from '@material-ui/lab';
 
 const update_interval = 1000;
 const command = 'uptime';
@@ -66,7 +67,10 @@ export default function LoadGraph(props) {
         .then(result => {
           addData(result[0]);
         })
-        .catch(err => console.log(err[1]));
+        .catch(err => {
+        <Alert severity="error">{err[1]}</Alert> 
+        console.log(err[1]);
+        });
     const interval_handle = setInterval(
       callback,
       props.interval ? props.interval : update_interval

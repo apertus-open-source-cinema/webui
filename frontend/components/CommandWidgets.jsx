@@ -3,7 +3,7 @@ import { exec } from '../util/exec';
 
 export function Command(props) {
   return (
-    <pre style={{ backgroundColor: '#eee', overflowX: 'auto' }}>
+    <pre style={{ overflowX: 'auto' }}>
       $ {props.command} {`\n`} <PlainCommand {...props} />
     </pre>
   );
