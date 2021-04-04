@@ -15,9 +15,6 @@ const theme = createMuiTheme({
     secondary: green,
     type: 'light',
   },
-  typography: {
-    fontFamily: 'Arial, Helvetica, sans-serif',
-  },
 });
 
 ReactDOM.render(

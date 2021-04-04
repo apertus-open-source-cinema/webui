@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Dygraph from 'dygraphs';
-import { Box, Container, makeStyles, Paper } from '@material-ui/core';
+import { Container, makeStyles, Paper } from '@material-ui/core';
 import { blue, green, red } from '@material-ui/core/colors';
 
 const update_interval = 1000;
@@ -15,7 +15,6 @@ const chart_config = {
   xlabel: 'Time',
   xLabelHeight: 16,
   title: chart_title,
-  
 };
 
 const useStyles = makeStyles(theme => ({
@@ -36,7 +35,6 @@ const useStyles = makeStyles(theme => ({
   tooltip: {
     margin: theme.spacing(2),
     padding: theme.spacing(2),
-    
   },
 }));
 
@@ -47,7 +45,6 @@ export default function LoadGraph(props) {
   const chartRef = useRef();
   const tooltip_ref = useRef();
   const classes = useStyles();
-
 
   function addData(str = '') {
     if (str.length == 0) return;
@@ -79,15 +76,13 @@ export default function LoadGraph(props) {
   }, []);
 
   return (
-    <Container className={classes.box_wrapper} >
-        <Paper className={classes.chart_paper}>
-          <div ref={chartRef} className={classes.chart} /> 
-        </Paper>
-        <Paper className={classes.tooltip} variant='outlined'>
-          <div ref={tooltip_ref}  />
-        </Paper>
-        
+    <Container className={classes.box_wrapper}>
+      <Paper className={classes.chart_paper}>
+        <div ref={chartRef} className={classes.chart} />
+      </Paper>
+      <Paper className={classes.tooltip} variant="outlined">
+        <div ref={tooltip_ref} />
+      </Paper>
     </Container>
-
   );
 }
