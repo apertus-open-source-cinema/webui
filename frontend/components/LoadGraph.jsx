@@ -68,8 +68,8 @@ export default function LoadGraph(props) {
           addData(result[0]);
         })
         .catch(err => {
-        <Alert severity="error">{err[1]}</Alert> 
-        console.log(err[1]);
+          <Alert severity="error">{err[1]}</Alert>;
+          console.log(err[1]);
         });
     const interval_handle = setInterval(
       callback,
@@ -81,7 +81,7 @@ export default function LoadGraph(props) {
 
   return (
     <Container className={classes.box_wrapper}>
-      <Paper className={classes.chart_paper}>
+      <Paper className={classes.chart_paper} variant="outlined">
         <div ref={chartRef} className={classes.chart} />
       </Paper>
       <Paper className={classes.tooltip} variant="outlined">
