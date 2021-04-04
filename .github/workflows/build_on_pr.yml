@@ -16,6 +16,3 @@ jobs:
       - uses: borales/actions-yarn@v2.0.0
         with:
           cmd: build # will run `yarn build` command
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: test # will run `yarn test` command
