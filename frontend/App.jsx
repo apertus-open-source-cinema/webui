@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   toolbar: theme.mixins.toolbar,
 }));
 
-export function App(props) {
+export function App() {
   const classes = useStyles();
 
   const [drawerOpen, setDrawerOpen] = useState(isDesktop);

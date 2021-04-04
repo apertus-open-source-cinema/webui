@@ -13,6 +13,10 @@ const theme = createMuiTheme({
       contrastText: '#ffffff',
     },
     secondary: green,
+    type: 'light',
+  },
+  typography: {
+    fontFamily: 'Arial, Helvetica, sans-serif',
   },
 });
 

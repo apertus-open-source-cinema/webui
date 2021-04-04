@@ -1,39 +1,44 @@
 import React, { useEffect, useRef } from 'react';
 import Dygraph from 'dygraphs';
-import { Box } from '@material-ui/core';
+import { Box, Container, makeStyles, Paper } from '@material-ui/core';
 import { blue, green, red } from '@material-ui/core/colors';
 
 const update_interval = 1000;
 const command = 'uptime';
-const chart_title = 'Load Averages';
+const chart_title = 'Load averages';
+
 const chart_config = {
   legend: 'always',
   labelsSeparateLines: true,
   colors: [red.A200, green.A200, blue.A200],
   strokeWidth: 1.5,
-  title: chart_title,
-  titleHeight: 24,
-  xlabel: 'Time(s)',
+  xlabel: 'Time',
   xLabelHeight: 16,
+  title: chart_title,
+  
 };
-const chartStyles = {
-  tooltip: {
-    margin: '0.5rem',
-    flex: 1,
-    width: '100%',
+
+const useStyles = makeStyles(theme => ({
+  chart_paper: {
+    height: '350px',
+    margin: theme.spacing(2),
+    padding: theme.spacing(2),
   },
   chart: {
     width: '100%',
-    height: '350px',
-    flex: 5,
+    height: '100%',
   },
   box_wrapper: {
-    margin: '1rem',
-    marginBottom: '1.5rem',
-    display: 'flex',
-    fontFamily: 'Arial, Helvetica, sans-serif',
+    width: '100%',
+    marginBottom: theme.spacing(4),
+    fontFamily: theme.typography.fontFamily,
   },
-};
+  tooltip: {
+    margin: theme.spacing(2),
+    padding: theme.spacing(2),
+    
+  },
+}));
 
 let data = 'date, 1 minute, 5 minute, 15 minute\n';
 let chart = null;
@@ -41,6 +46,8 @@ let chart = null;
 export default function LoadGraph(props) {
   const chartRef = useRef();
   const tooltip_ref = useRef();
+  const classes = useStyles();
+
 
   function addData(str = '') {
     if (str.length == 0) return;
@@ -72,9 +79,15 @@ export default function LoadGraph(props) {
   }, []);
 
   return (
-    <Box style={chartStyles.box_wrapper}>
-      <div ref={chartRef} style={chartStyles.chart} />
-      <div ref={tooltip_ref} style={chartStyles.tooltip} />
-    </Box>
+    <Container className={classes.box_wrapper} >
+        <Paper className={classes.chart_paper}>
+          <div ref={chartRef} className={classes.chart} /> 
+        </Paper>
+        <Paper className={classes.tooltip} variant='outlined'>
+          <div ref={tooltip_ref}  />
+        </Paper>
+        
+    </Container>
+
   );
 }
