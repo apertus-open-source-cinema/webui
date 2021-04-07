@@ -302,7 +302,7 @@ function SortableTable(props) {
                       tabIndex={-1}
                       key={index}
                       style={{
-                        background: row[in_use].length > 0 ? orange[50] : null,
+                        background: row[in_use].length > 0 ? theme.palette.action.hover: null,
                       }}
                     >
                       {Object.keys(headCells).map(function(key) {
