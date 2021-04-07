@@ -17,6 +17,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { useState } from 'react';
 import clsx from 'clsx';
 import { isDesktop } from './util/isDesktop';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 
 const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
@@ -25,6 +27,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.default,
     width: '100vw',
     minHeight: '100vh',
+    flexGrow: 1,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -57,9 +60,12 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 0,
   },
   toolbar: theme.mixins.toolbar,
+  title: {
+    flexGrow: 1,
+  },
 }));
 
-export function App() {
+export function App(props) {
   const classes = useStyles();
 
   const [drawerOpen, setDrawerOpen] = useState(isDesktop);
@@ -77,7 +83,7 @@ export function App() {
             <MenuIcon />
           </IconButton>
 
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap className={classes.title}>
             {process.env.MOCK ? 'Mock' : ''} AXIOM WebUi -&nbsp;
             <Switch>
               {Object.values(routes).map(({ route, title }) => (
@@ -87,6 +93,9 @@ export function App() {
               ))}
             </Switch>
           </Typography>
+          <IconButton aria-label="dark" onClick={props.changeTheme}>
+            {props.isDark ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
         </Toolbar>
       </AppBar>
 
