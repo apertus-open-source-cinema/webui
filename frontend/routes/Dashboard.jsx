@@ -20,7 +20,11 @@ import { usePromiseGenerator } from '../util/usePromiseGenerator';
 import { NctrlValueWidgets } from '../components/*.jsx';
 import Typography from '@material-ui/core/Typography';
 import { NCTRL_BASE_PATH } from '../util/nctrl';
+import { Player } from '@lottiefiles/react-lottie-player';
+import { classicNameResolver } from 'typescript';
 
+const apertus_animation = require('../util/animations/aperture.json');
+const yaml_error = require('../util/animations/error.json');
 export const title = 'Dashboard';
 export const route = '/dashboard';
 export const explanation = `
@@ -35,6 +39,25 @@ const useStyles = makeStyles(theme => ({
     bottom: 0,
     right: 0,
     margin: '50px',
+  },
+  error_message: {
+    padding: theme.spacing(2),
+  },
+  error_wrapper: {
+    textAlign: 'left',
+    width: '100%',
+  },
+  error_player: {
+    height: '10px',
+    width: '10px',
+    alignItems: 'center',
+    display: 'flex',
+  },
+  load_player: {
+    height: '10px',
+    width: '10px',
+    alignItems: 'center',
+    display: 'flex',
   },
   ul: {
     listStyle: 'none',
@@ -63,7 +86,7 @@ export function Component(props) {
     }
   }, [file_yml]);
 
-  const parsed = useYaml(yaml) || [];
+  const parsed = useYaml(yaml);
 
   const [rerenderDep, setRerenderDep] = useState(0);
   const rerender = () => setRerenderDep(rerenderDep + 1);
@@ -80,30 +103,60 @@ export function Component(props) {
         />
       }
       <div className={classes.ul}>
-        {Object.keys(parsed).map((heading, i) => {
-          return (
-            <div className={classes.notWide} key={i}>
-              <Typography variant="h6">{heading}:</Typography>
-              <Paper className={classes.paper}>
-                {parsed[heading].map((x, i) => {
-                  const InputWidget =
-                    NctrlValueWidgets[
-                      `NctrlValue${x.widget.replace(/^(.)/, v => v.toUpperCase())}`
-                    ];
-                  return (
-                    <InputWidget
-                      key={i}
-                      rerender={rerender}
-                      rerenderDep={rerenderDep}
-                      {...x}
-                      path={`${NCTRL_BASE_PATH}${x.path}`}
-                    />
-                  );
-                })}
-              </Paper>
-            </div>
-          );
-        })}
+        {!parsed ? (
+          <Player
+            src={apertus_animation}
+            autoplay={true}
+            loop={true}
+            controls={false}
+            style={{ height: '500px', width: '500px', alignItems: 'center', display: 'flex' }}
+            speed={3}
+          />
+        ) : parsed.error_message ? (
+          <div className={classes.error_wrapper}>
+            <Player
+              src={yaml_error}
+              autoplay={true}
+              loop={true}
+              controls={false}
+              style={{ height: '200px', width: '200px', alignItems: 'center', display: 'flex' }}
+            />
+            <Typography color="error" className={classes.error_message}>
+              An Error has Occured : <br />
+              <br />
+              <b>Name</b> : {parsed.error_name} <br />
+              <br />
+              <b>Message</b> : {parsed.error_message} <br />
+              <br />
+              <b>Stack</b> : {parsed.error_stack}
+            </Typography>
+          </div>
+        ) : (
+          Object.keys(parsed).map((heading, i) => {
+            return (
+              <div className={classes.notWide} key={i}>
+                <Typography variant="h6">{heading}:</Typography>
+                <Paper className={classes.paper}>
+                  {parsed[heading].map((x, i) => {
+                    const InputWidget =
+                      NctrlValueWidgets[
+                        `NctrlValue${x.widget.replace(/^(.)/, v => v.toUpperCase())}`
+                      ];
+                    return (
+                      <InputWidget
+                        key={i}
+                        rerender={rerender}
+                        rerenderDep={rerenderDep}
+                        {...x}
+                        path={`${NCTRL_BASE_PATH}${x.path}`}
+                      />
+                    );
+                  })}
+                </Paper>
+              </div>
+            );
+          })
+        )}
       </div>
     </Box>
   );
@@ -167,7 +220,16 @@ function EditDashboard({ current_yml: currentYaml, setYaml }) {
 function useYaml(yamlString) {
   const [deserialized, setDeserialized] = useState(null);
   useEffect(() => {
-    setDeserialized(safeLoad(yamlString));
+    try {
+      setDeserialized(safeLoad(yamlString));
+    } catch (error) {
+      console.log(error);
+      return setDeserialized({
+        error_name: error.name,
+        error_message: error.message,
+        error_stack: error.stack,
+      });
+    }
   }, [yamlString]);
   return deserialized;
 }
