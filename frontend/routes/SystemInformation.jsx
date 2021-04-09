@@ -17,14 +17,14 @@ export const explanation = `Get an overview of whats going on in the linux side 
   Ip address, system load, etc can be found here`;
 
 export function Component(props) {
-  const [modalOpen, setmodalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div>
       <Modal
         open={modalOpen}
         onClose={() => {
-          setmodalOpen(false);
+          setModalOpen(false);
         }}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
@@ -47,7 +47,7 @@ export function Component(props) {
             <Button
               style={{ float: 'right' }}
               onClick={() => {
-                setmodalOpen(false);
+                setModalOpen(false);
               }}
             >
               <CancelPresentationIcon />
@@ -61,7 +61,7 @@ export function Component(props) {
         color="primary"
         endIcon={<CameraIcon />}
         onClick={() => {
-          setmodalOpen(true);
+          setModalOpen(true);
         }}
         style={{ float: 'right', margin: '15px' }}
       >

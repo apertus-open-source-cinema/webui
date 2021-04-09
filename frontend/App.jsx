@@ -63,7 +63,7 @@ export function App(props) {
   const classes = useStyles();
 
   const [drawerOpen, setDrawerOpen] = useState(isDesktop);
-  console.log(props.theme.palette.primary.main);
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>

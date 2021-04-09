@@ -39,13 +39,7 @@ const CameraLoadWidget = props => {
 
   return (
     <p>
-      <Chart
-        height={'400px'}
-        chartType="Line"
-        loader={<div>Loading Chart</div>}
-        data={load}
-        rootProps={{ 'data-testid': '2' }}
-      />
+      <Chart height={'400px'} chartType="Line" data={load} />
     </p>
   );
 };
