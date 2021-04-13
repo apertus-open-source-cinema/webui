@@ -8,6 +8,8 @@ import {
   DialogContentText,
   DialogTitle,
   Fab,
+  Grid,
+  Link,
   makeStyles,
   Paper,
   TextField,
@@ -21,9 +23,11 @@ import { NctrlValueWidgets } from '../components/*.jsx';
 import Typography from '@material-ui/core/Typography';
 import { NCTRL_BASE_PATH } from '../util/nctrl';
 import { Player } from '@lottiefiles/react-lottie-player';
+import ErrorTwoToneIcon from '@material-ui/icons/ErrorTwoTone';
 
+// This animation is taken from : https://lottiefiles.com/624-camera-aperture and comes under creative commons license 4.0
 const apertus_animation = require('../util/animations/aperture.json');
-const yaml_error = require('../util/animations/error.json');
+
 export const title = 'Dashboard';
 export const route = '/dashboard';
 export const explanation = `
@@ -31,6 +35,12 @@ export const explanation = `
   **set-compatible** way. Here you can set the ISO, exposure time and related parameters.`;
 
 const YAML_PATH = 'dashboard.yml';
+const validYAML = new Set([
+  '- widget: spacing',
+  '- widget: slider',
+  '- widget: textfield',
+  '- widget: buttons',
+]);
 
 const useStyles = makeStyles(theme => ({
   add: {
@@ -72,6 +82,10 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: '10px 5px',
   },
+  attribution: {
+    fontFamily: theme.typography.fontFamily,
+    padding: theme.spacing(1),
+  },
 }));
 
 export function Component(props) {
@@ -86,7 +100,6 @@ export function Component(props) {
   }, [file_yml]);
 
   const parsed = useYaml(yaml);
-
   const [rerenderDep, setRerenderDep] = useState(0);
   const rerender = () => setRerenderDep(rerenderDep + 1);
 
@@ -101,25 +114,26 @@ export function Component(props) {
           }}
         />
       }
-      <div className={classes.ul}>
+      <div>
         {!parsed ? (
           <Player
             src={apertus_animation}
             autoplay={true}
             loop={true}
             controls={false}
-            style={{ height: '500px', width: '500px', alignItems: 'center', display: 'flex' }}
+            style={{ height: '500px', width: '500px' }}
             speed={3}
           />
         ) : parsed.error_message ? (
           <div className={classes.error_wrapper}>
-            <Player
-              src={yaml_error}
-              autoplay={true}
-              loop={true}
-              controls={false}
-              style={{ height: '200px', width: '200px', alignItems: 'center', display: 'flex' }}
-            />
+            <Grid item style={{ textAlign: 'center' }}>
+              <ErrorTwoToneIcon
+                color="error"
+                fontSize="large"
+                style={{ height: '100px', width: '100px', padding: '0.5rem' }}
+              />
+            </Grid>
+
             <Typography color="error" className={classes.error_message}>
               An Error has Occured : <br />
               <br />
@@ -131,30 +145,41 @@ export function Component(props) {
             </Typography>
           </div>
         ) : (
-          Object.keys(parsed).map((heading, i) => {
-            return (
-              <div className={classes.notWide} key={i}>
-                <Typography variant="h6">{heading}:</Typography>
-                <Paper className={classes.paper}>
-                  {parsed[heading].map((x, i) => {
-                    const InputWidget =
-                      NctrlValueWidgets[
-                        `NctrlValue${x.widget.replace(/^(.)/, v => v.toUpperCase())}`
-                      ];
-                    return (
-                      <InputWidget
-                        key={i}
-                        rerender={rerender}
-                        rerenderDep={rerenderDep}
-                        {...x}
-                        path={`${NCTRL_BASE_PATH}${x.path}`}
-                      />
-                    );
-                  })}
-                </Paper>
-              </div>
-            );
-          })
+          <div>
+            <div className={classes.ul}>
+              {Object.keys(parsed).map((heading, i) => {
+                return (
+                  <div className={classes.notWide} key={i}>
+                    <Typography variant="h6">{heading}:</Typography>
+                    <Paper className={classes.paper}>
+                      {parsed[heading].map((x, i) => {
+                        const InputWidget =
+                          NctrlValueWidgets[
+                            `NctrlValue${x.widget.replace(/^(.)/, v => v.toUpperCase())}`
+                          ];
+                        return (
+                          <InputWidget
+                            key={i}
+                            rerender={rerender}
+                            rerenderDep={rerenderDep}
+                            {...x}
+                            path={`${NCTRL_BASE_PATH}${x.path}`}
+                          />
+                        );
+                      })}
+                    </Paper>
+                  </div>
+                );
+              })}
+            </div>
+            <Link
+              target="_blank"
+              className={classes.attribution}
+              href="https://lottiefiles.com/624-camera-aperture"
+            >
+              aperture animation
+            </Link>
+          </div>
         )}
       </div>
     </Box>
@@ -216,13 +241,39 @@ function EditDashboard({ current_yml: currentYaml, setYaml }) {
   );
 }
 
+function validateWidgets(yamlString) {
+  var idx = 0,
+    curWidget = '';
+  while (idx < yamlString.length) {
+    while (idx < yamlString.length && yamlString[idx] == ' ') idx++;
+    if (idx == yamlString.length) return null;
+    if (yamlString[idx] == '-' && idx < yamlString.length - 1 && yamlString[idx + 1] == ' ') {
+      while (idx < yamlString.length && yamlString[idx] != '\n') curWidget += yamlString[idx++];
+      if (!validYAML.has(curWidget)) {
+        return curWidget;
+      }
+      curWidget = '';
+    } else {
+      while (idx < yamlString.length && yamlString[idx] != '\n') idx++;
+    }
+    idx++;
+  }
+  return null;
+}
+
 function useYaml(yamlString) {
   const [deserialized, setDeserialized] = useState(null);
   useEffect(() => {
     try {
+      const res = validateWidgets(yamlString);
+      if (yamlString != null && res)
+        throw {
+          name: 'Invalid widget',
+          message: `Cannot find widget`,
+          stack: `Error : ---${res}---; ${yamlString}`,
+        };
       setDeserialized(safeLoad(yamlString));
     } catch (error) {
-      console.log(error);
       return setDeserialized({
         error_name: error.name,
         error_message: error.message,
