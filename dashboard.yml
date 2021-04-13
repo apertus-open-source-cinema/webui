@@ -18,7 +18,6 @@ Exposure Time [ms]:
     path: devices/cmv12000/computed/exposure_time_ms
     min: 100
     max: 10000
-
   - widget: spacing
     px: 30
   - widget: buttons
