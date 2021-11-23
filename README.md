@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: © 2019 Jaro Habiger <jarohabiger@googlemail.com>
+SPDX-License-Identifier: CC-BY-SA-4.0
+-->
+
 # AXIOM webui
 A web based user interface to control AXIOM cameras.
 To be used in connection with [nctrl](https://github.com/axiom-micro/nctrl), the central hardware 

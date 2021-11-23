@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2019 Jaro Habiger <jarohabiger@googlemail.com>
+// SPDX-License-Identifier: AGPL-3.0-only
+
 const { exec } = require('child_process');
 
 function on_connection(connection) {
