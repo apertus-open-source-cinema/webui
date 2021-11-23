@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2019 Jaro Habiger <jarohabiger@googlemail.com>
+// SPDX-License-Identifier: AGPL-3.0-only
+
 import { default as React, useEffect, useState } from 'react';
 import { Button, makeStyles, MenuItem, TextField, Typography } from '@material-ui/core';
 import { usePromiseGenerator, usePromiseGeneratorRefreshable } from '../util/usePromiseGenerator';
