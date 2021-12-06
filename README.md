@@ -45,9 +45,10 @@ the results, but the backend has no knowledge of any control daemon. This allows
 business logic in the backend.
 
 ## Develop!
-To start developing the webui clone this repository and install the dependencies:
+To start developing the webui clone this repository and install the dependencies (you need npm installed already):
 ```bash
-git clone https://github.com/axiom-micro/webui
+sudo npm install --global yarn
+git clone https://github.com/apertus-open-source-cinema/webui
 cd webui
 yarn install
 ```
