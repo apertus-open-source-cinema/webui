@@ -283,7 +283,7 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
           '3 Slopes': 'x => 3',
         },
       })}
-      <div stlye={{ display: showMessage }}>
+      <div style={{ display: showMessage }}>
         {NctrlValueText({ text: 'Standard exposure is used' })}
       </div>
       <div style={{ display: showSlopes2 }}>
