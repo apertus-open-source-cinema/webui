@@ -282,40 +282,20 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
           '3 Slopes': 'x => 3',
         },
       })}
+
       {NctrlValueSlider({
         path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
-        options: {
-          64: 'off',
-          70: '10 %',
-          76: '20 %',
-          83: '30 %',
-          89: '40 %',
-          95: '50 %',
-          102: '60 %',
-          108: '70 %',
-          114: '80 %',
-          121: '90 %',
-          127: '100 %',
-        },
+        min: 0,
+        max: 15,
         integer: true,
         rerender,
         rerenderDeps,
       })}
-      {NctrlValueText({ text: 'Exposure Time Kneepoint 1' })}
+      {NctrlValueText({ text: 'Kneepoint 1 Level' })}
+
       <div style={{ display: showSlopes2 }}>
         {NctrlValueSlider({
           path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
-          min: 0,
-          max: 15,
-          integer: true,
-          rerender,
-          rerenderDeps,
-        })}
-        {NctrlValueText({ text: 'Kneepoint 1 Level' })}
-      </div>
-      <div style={{ display: showSlopes3 }}>
-        {NctrlValueSlider({
-          path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
           options: {
             64: 'off',
             70: '10 %',
@@ -333,11 +313,33 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
           rerender,
           rerenderDeps,
         })}
-        {NctrlValueText({ text: 'Exposure Time Kneepoint 2' })}
+        {NctrlValueText({ text: 'Exposure Time Kneepoint 1' })}
+      </div>
+      <div style={{ display: showSlopes3 }}>
         {NctrlValueSlider({
           path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
           min: 0,
           max: 15,
+          integer: true,
+          rerender,
+          rerenderDeps,
+        })}
+        {NctrlValueText({ text: 'Exposure Time Kneepoint 2' })}
+        {NctrlValueSlider({
+          path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
+          options: {
+            64: 'off',
+            70: '10 %',
+            76: '20 %',
+            83: '30 %',
+            89: '40 %',
+            95: '50 %',
+            102: '60 %',
+            108: '70 %',
+            114: '80 %',
+            121: '90 %',
+            127: '100 %',
+          },
           integer: true,
           rerender,
           rerenderDeps,
