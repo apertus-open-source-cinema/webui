@@ -24,11 +24,11 @@ const useStyles = makeStyles(theme => ({
   },
   // Prevent button label from grabbing the mouse event and breaking active state
   button_label: {
-    pointerEvents: 'none'
+    pointerEvents: 'none',
   },
   active: {
     background: theme.palette.primary.main,
-    color: "white"
+    color: 'white',
   },
   changed: {
     '& fieldset': {
@@ -122,7 +122,7 @@ export function NctrlValueTextfield({ path, rerender, rerenderDep }) {
 export function NctrlValueSlider({ path, options, min, max, integer, rerender, rerenderDep }) {
   const classes = useStyles();
 
-  const parseValue = integer ? parseInt : parseFloat
+  const parseValue = integer ? parseInt : parseFloat;
 
   const nctrlValue = NctrlValue.of(path);
   const [value, setValue] = useState(0.0);
@@ -145,7 +145,7 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
     nctrlValue
       .setValue(value)
       .then(() => {
-          nctrlValue.value().then(value => setValue(parseValue(value)))
+        nctrlValue.value().then(value => setValue(parseValue(value)));
       })
       .then(rerender());
 
@@ -225,23 +225,23 @@ export function NctrlValueButtons({ path, buttons, selectedIndex, rerender, rere
     <ButtonGroup size="large" className={classes.input}>
       {Object.keys(buttons).map((label, index) => {
         const clickFn = eval(buttons[label]);
-        const activeClass = active === label ? classes.active : ''
-              
+        const activeClass = active === label ? classes.active : '';
+
         return (
           <Button
             classes={{
-              label: classes.button_label
+              label: classes.button_label,
             }}
             className={classes.button + ' ' + activeClass}
             key={label}
             id={label}
-            onClick={(event) => {
-              setActive(event.target.id)
-              selectedIndex(index)
+            onClick={event => {
+              setActive(event.target.id);
+              selectedIndex(index);
               nctrlValue.setValue(clickFn(value)).then(rerender);
             }}
           >
-          {label}
+            {label}
           </Button>
         );
       })}
@@ -260,13 +260,13 @@ export function NctrlValueText({ text }) {
 
 export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) {
   const classes = useStyles();
-  const hide = hidden ? "none" : ""
-  
+  const hide = hidden ? 'none' : '';
+
   const [selectedIndex, setSelectedIndex] = useState('');
 
-  const getSelectedIndex = (index) => {
-    setSelectedIndex(index)
-  }
+  const getSelectedIndex = index => {
+    setSelectedIndex(index);
+  };
 
   const showSlopes2 = selectedIndex >= 1 ? '' : 'none';
   const showSlopes3 = selectedIndex == 2 ? '' : 'none';
@@ -274,71 +274,76 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
   return (
     <div style={{ display: hide }}>
       {NctrlValueButtons({
-        path: "devices/cmv12000/cooked/number_slopes",
-          selectedIndex: getSelectedIndex,
-          buttons: {
-            "1 Slope": "x => 1",
-            "2 Slopes": "x => 2",
-            "3 Slopes": "x => 3"
-          }})}
-      <div>
-        {NctrlValueSlider({
-          path: "devices/cmv12000/computed/exposure_time_kp1_ms",
-          options:
-          {
-            64: "off",
-            70: "10 %",
-            76: "20 %",
-            83: "30 %",
-            89: "40 %",
-            95: "50 %",
-            102: "60 %",
-            108: "70 %",
-            114: "80 %",
-            121: "90 %",
-            127: "100 %",
-          }, integer: true, rerender, rerenderDeps })}
-        {NctrlValueText({ text: "Exposure Time Kneepoint 1" })}
-        {NctrlValueSlider({ path: "devices/cmv12000/computed/exposure_time_kp1_ms", min: 0, max: 15, integer: true, rerender, rerenderDeps })}
-        {NctrlValueText({ text: "Kneepoint 1 Level" })}
-      </div>
+        path: 'devices/cmv12000/cooked/number_slopes',
+        selectedIndex: getSelectedIndex,
+        buttons: {
+          '1 Slope': 'x => 1',
+          '2 Slopes': 'x => 2',
+          '3 Slopes': 'x => 3',
+        },
+      })}
+      {NctrlValueSlider({
+        path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
+        options: {
+          64: 'off',
+          70: '10 %',
+          76: '20 %',
+          83: '30 %',
+          89: '40 %',
+          95: '50 %',
+          102: '60 %',
+          108: '70 %',
+          114: '80 %',
+          121: '90 %',
+          127: '100 %',
+        },
+        integer: true,
+        rerender,
+        rerenderDeps,
+      })}
+      {NctrlValueText({ text: 'Exposure Time Kneepoint 1' })}
       <div style={{ display: showSlopes2 }}>
-        {NctrlValueSlider({ path: "devices/cmv12000/computed/exposure_time_kp2_ms", options:
-          {
-            64: "off",
-            70: "10 %",
-            76: "20 %",
-            83: "30 %",
-            89: "40 %",
-            95: "50 %",
-            102: "60 %",
-            108: "70 %",
-            114: "80 %",
-            121: "90 %",
-            127: "100 %",
-          }, integer: true, rerender, rerenderDeps })}
-        {NctrlValueText({ text: "Exposure Time Kneepoint 2" })}
-        {NctrlValueSlider({ path: "devices/cmv12000/computed/exposure_time_kp2_ms", min: 0, max: 15, integer: true, rerender, rerenderDeps })}  
-        {NctrlValueText({ text: "Kneepoint 2 Level" })}
+        {NctrlValueSlider({
+          path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
+          min: 0,
+          max: 15,
+          integer: true,
+          rerender,
+          rerenderDeps,
+        })}
+        {NctrlValueText({ text: 'Kneepoint 1 Level' })}
       </div>
       <div style={{ display: showSlopes3 }}>
-        {NctrlValueSlider({ path: "devices/cmv12000/computed/exposure_time_kp3_ms", options:
-          {
-            64: "off",
-            70: "10 %",
-            76: "20 %",
-            83: "30 %",
-            89: "40 %",
-            95: "50 %",
-            102: "60 %",
-            108: "70 %",
-            114: "80 %",
-            121: "90 %",
-            127: "100 %",
-          }, integer: true, rerender, rerenderDeps })}
-        {NctrlValueText({ text: "Exposure Time Kneepoint 3" })}
-        {NctrlValueSlider({ path: "devices/cmv12000/computed/exposure_time_kp3_ms", min: 0, max: 15, integer: true, rerender, rerenderDeps })}
-        {NctrlValueText({ text: "Kneepoint 3 Level" })}
+        {NctrlValueSlider({
+          path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
+          options: {
+            64: 'off',
+            70: '10 %',
+            76: '20 %',
+            83: '30 %',
+            89: '40 %',
+            95: '50 %',
+            102: '60 %',
+            108: '70 %',
+            114: '80 %',
+            121: '90 %',
+            127: '100 %',
+          },
+          integer: true,
+          rerender,
+          rerenderDeps,
+        })}
+        {NctrlValueText({ text: 'Exposure Time Kneepoint 2' })}
+        {NctrlValueSlider({
+          path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
+          min: 0,
+          max: 15,
+          integer: true,
+          rerender,
+          rerenderDeps,
+        })}
+        {NctrlValueText({ text: 'Kneepoint 2 Level' })}
       </div>
-    </div>)
+    </div>
+  );
 }
