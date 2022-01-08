@@ -270,6 +270,7 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
 
   const showSlopes2 = selectedIndex >= 1 ? '' : 'none';
   const showSlopes3 = selectedIndex == 2 ? '' : 'none';
+  const showMessage = selectedIndex == 0 ? '' : 'none';
 
   return (
     <div style={{ display: hide }}>
@@ -282,18 +283,19 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
           '3 Slopes': 'x => 3',
         },
       })}
-
-      {NctrlValueSlider({
-        path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
-        min: 0,
-        max: 15,
-        integer: true,
-        rerender,
-        rerenderDeps,
-      })}
-      {NctrlValueText({ text: 'Kneepoint 1 Level' })}
-
+      <div stlye={{ display: showMessage }}>
+        {NctrlValueText({ text: 'Standard exposure is used' })}
+      </div>
       <div style={{ display: showSlopes2 }}>
+        {NctrlValueSlider({
+          path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
+          min: 0,
+          max: 15,
+          integer: true,
+          rerender,
+          rerenderDeps,
+        })}
+        {NctrlValueText({ text: 'Kneepoint 1 Level' })}
         {NctrlValueSlider({
           path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
           options: {
