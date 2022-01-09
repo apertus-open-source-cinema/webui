@@ -122,12 +122,10 @@ export function NctrlValueTextfield({ path, rerender, rerenderDep }) {
 export function NctrlValueSlider({ path, options, min, max, integer, rerender, rerenderDep }) {
   const classes = useStyles();
 
-  const parseValue = integer ? parseInt : parseFloat;
-
   const nctrlValue = NctrlValue.of(path);
   const [value, setValue] = useState(0.0);
   useEffect(() => {
-    nctrlValue.value().then(x => setValue(parseValue(x)));
+    nctrlValue.value().then(x => setValue(parseFloat(x)));
   }, [path, rerenderDep]);
 
   const MIN_SEND_DELAY = 50; // ms TODO: Maybe adjust this
@@ -137,6 +135,8 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
     const currentTime = +new Date();
     if (lastUpdate + MIN_SEND_DELAY < currentTime && newValue !== value) {
       setLastUpdate(currentTime);
+      console.log('VALUE: ' + newValue);
+
       nctrlValue.setValue(newValue);
     }
   };
@@ -145,7 +145,7 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
     nctrlValue
       .setValue(value)
       .then(() => {
-        nctrlValue.value().then(value => setValue(parseValue(value)));
+        nctrlValue.value().then(value => setValue(parseFloat(value)));
       })
       .then(rerender());
 
@@ -155,13 +155,13 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
     } else if (value < min) {
       return <ArrowLeft />;
     } else {
-      return value.toFixed(integer || value > 100 ? 0 : 1);
+      return value.toFixed(integer || value >= 100 ? 0 : 1);
     }
   };
 
   if (options) {
     const marks = Object.keys(options).map(key => ({
-      value: parseValue(key),
+      value: parseFloat(key),
       label: options[key],
     }));
 
@@ -237,7 +237,7 @@ export function NctrlValueButtons({ path, buttons, selectedIndex, rerender, rere
             id={label}
             onClick={event => {
               setActive(event.target.id);
-              selectedIndex(index);
+              if (selectedIndex) selectedIndex(index);
               nctrlValue.setValue(clickFn(value)).then(rerender);
             }}
           >
@@ -258,22 +258,21 @@ export function NctrlValueText({ text }) {
   return <Typography className={classes.text}>{text}</Typography>;
 }
 
-export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) {
+export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
   const classes = useStyles();
-  const hide = hidden ? 'none' : '';
 
-  const [selectedIndex, setSelectedIndex] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const getSelectedIndex = index => {
     setSelectedIndex(index);
   };
 
-  const showSlopes2 = selectedIndex >= 1 ? '' : 'none';
-  const showSlopes3 = selectedIndex == 2 ? '' : 'none';
-  const showMessage = selectedIndex == 0 ? '' : 'none';
+  const showSlopes2 = selectedIndex >= 1 ? 'block' : 'none';
+  const showSlopes3 = selectedIndex == 2 ? 'block' : 'none';
+  const showMessage = selectedIndex == 0 ? 'block' : 'none';
 
   return (
-    <div style={{ display: hide }}>
+    <div>
       {NctrlValueButtons({
         path: 'devices/cmv12000/cooked/number_slopes',
         selectedIndex: getSelectedIndex,
@@ -295,9 +294,9 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
           rerender,
           rerenderDeps,
         })}
-        {NctrlValueText({ text: 'Kneepoint 1 Level' })}
+        {NctrlValueText({ text: 'Exposure Time Kneepoint 1' })}
         {NctrlValueSlider({
-          path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
+          path: 'devices/cmv12000/cooked/vtfl2',
           options: {
             64: 'off',
             70: '10 %',
@@ -315,7 +314,7 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
           rerender,
           rerenderDeps,
         })}
-        {NctrlValueText({ text: 'Exposure Time Kneepoint 1' })}
+        {NctrlValueText({ text: 'Kneepoint 1 Level' })}
       </div>
       <div style={{ display: showSlopes3 }}>
         {NctrlValueSlider({
@@ -328,7 +327,7 @@ export function NctrlValueSlopeeditor({ text, hidden, rerender, rerenderDeps }) 
         })}
         {NctrlValueText({ text: 'Exposure Time Kneepoint 2' })}
         {NctrlValueSlider({
-          path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
+          path: 'devices/cmv12000/cooked/vtfl3',
           options: {
             64: 'off',
             70: '10 %',
