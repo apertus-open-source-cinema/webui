@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: © 2019 Jaro Habiger <jarohabiger@googlemail.com>
 // SPDX-License-Identifier: AGPL-3.0-only
 
-import { Component, default as React, useEffect, useState } from 'react';
-import { Button, Container, makeStyles, MenuItem, TextField, Typography } from '@material-ui/core';
+import { default as React, useEffect, useState } from 'react';
+import { Button, makeStyles, MenuItem, TextField, Typography } from '@material-ui/core';
 import { usePromiseGenerator, usePromiseGeneratorRefreshable } from '../util/usePromiseGenerator';
 import Slider from '@material-ui/core/Slider';
 import ArrowLeft from '@material-ui/icons/ArrowBack';
 import ArrowRight from '@material-ui/icons/ArrowForward';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 const useStyles = makeStyles(theme => ({
   input: {
@@ -18,17 +20,19 @@ const useStyles = makeStyles(theme => ({
     '& fieldset': {
       borderColor: theme.palette.text.primary + ' !important',
     },
+    '& .Mui-selected': {
+      backgroundColor: theme.palette.primary.main,
+      color: 'white !important',
+    },
+    '& .Mui-selected:hover': {
+      backgroundColor: '#FF6726',
+    },
+    '& .MuiToggleButton-root': {
+      color: theme.palette.text.primary,
+    },
   },
   button: {
     flexGrow: 1,
-  },
-  // Prevent button label from grabbing the mouse event and breaking active state
-  button_label: {
-    pointerEvents: 'none',
-  },
-  active: {
-    background: theme.palette.primary.main,
-    color: 'white',
   },
   changed: {
     '& fieldset': {
@@ -144,9 +148,7 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
   const onChangeCommitted = (e, value) =>
     nctrlValue
       .setValue(value)
-      .then(() => {
-        nctrlValue.value().then(value => setValue(parseFloat(value)));
-      })
+      .then(() => nctrlValue.value().then(value => setValue(parseFloat(value))))
       .then(rerender());
 
   const renderLabel = () => {
@@ -212,34 +214,24 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
   }
 }
 
-export function NctrlValueButtons({ path, buttons, selectedIndex, rerender, rerenderDep }) {
+export function NctrlValueButtons({ path, buttons, rerender, rerenderDep }) {
   const classes = useStyles();
 
   const nctrlValue = NctrlValue.of(path);
   const value = usePromiseGenerator(() => nctrlValue.value(), [nctrlValue, rerenderDep], '');
-  // Set first button as active by default
-  const [active, setActive] = useState(Object.keys(buttons)[0]);
 
   // the buttons are a map of label -> (formerValue) => nextValue
   return (
     <ButtonGroup size="large" className={classes.input}>
-      {Object.keys(buttons).map((label, index) => {
+      {Object.keys(buttons).map(label => {
         const clickFn = eval(buttons[label]);
-        const activeClass = active === label ? classes.active : '';
 
         return (
           <Button
-            classes={{
-              label: classes.button_label,
-            }}
-            className={classes.button + ' ' + activeClass}
+            className={classes.button}
             key={label}
             id={label}
-            onClick={event => {
-              setActive(event.target.id);
-              if (selectedIndex) selectedIndex(index);
-              nctrlValue.setValue(clickFn(value)).then(rerender);
-            }}
+            onClick={() => nctrlValue.setValue(clickFn(value)).then(rerender)}
           >
             {label}
           </Button>
@@ -263,28 +255,33 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const getSelectedIndex = index => {
-    setSelectedIndex(index);
-  };
-
   const showSlopes2 = selectedIndex >= 1 ? 'block' : 'none';
   const showSlopes3 = selectedIndex == 2 ? 'block' : 'none';
-  const showMessage = selectedIndex == 0 ? 'block' : 'none';
 
   return (
     <div>
-      {NctrlValueButtons({
-        path: 'devices/cmv12000/cooked/number_slopes',
-        selectedIndex: getSelectedIndex,
-        buttons: {
-          '1 Slope': 'x => 1',
-          '2 Slopes': 'x => 2',
-          '3 Slopes': 'x => 3',
-        },
-      })}
-      <div style={{ display: showMessage }}>
-        {NctrlValueText({ text: 'Standard exposure is used' })}
-      </div>
+      <ToggleButtonGroup
+        className={classes.input}
+        value={selectedIndex}
+        onChange={(_, value) => setSelectedIndex(value)}
+        exclusive
+      >
+        <ToggleButton
+          value={0}
+          className={classes.button}
+          classes={{
+            selected: classes.selected,
+          }}
+        >
+          1 Slope
+        </ToggleButton>
+        <ToggleButton value={1} className={classes.button}>
+          2 Slopes
+        </ToggleButton>
+        <ToggleButton value={2} className={classes.button}>
+          3 Slopes
+        </ToggleButton>
+      </ToggleButtonGroup>
       <div style={{ display: showSlopes2 }}>
         {NctrlValueSlider({
           path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
