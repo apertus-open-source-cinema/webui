@@ -139,8 +139,6 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
     const currentTime = +new Date();
     if (lastUpdate + MIN_SEND_DELAY < currentTime && newValue !== value) {
       setLastUpdate(currentTime);
-      console.log('VALUE: ' + newValue);
-
       nctrlValue.setValue(newValue);
     }
   };
