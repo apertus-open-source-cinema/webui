@@ -122,6 +122,7 @@ export function App(props) {
         })}
       >
         <div className={classes.toolbar} />
+
         <Switch>
           {Object.values(routes).map(({ route, Component }) => (
             <Route exact path={route} key={route} component={Component} />
