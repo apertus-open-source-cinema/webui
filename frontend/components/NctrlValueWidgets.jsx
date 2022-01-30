@@ -261,7 +261,9 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
       <ToggleButtonGroup
         className={classes.input}
         value={selectedIndex}
-        onChange={(_, value) => setSelectedIndex(value)}
+        onChange={(_, value) => {
+          if (value != null) setSelectedIndex(value);
+        }}
         exclusive
       >
         <ToggleButton
