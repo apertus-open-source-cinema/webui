@@ -10,6 +10,7 @@ import ArrowRight from '@material-ui/icons/ArrowForward';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { NCTRL_BASE_PATH } from '../util/nctrl';
 
 const useStyles = makeStyles(theme => ({
   input: {
@@ -284,7 +285,7 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
       </ToggleButtonGroup>
       <div style={{ display: showSlopes2 }}>
         {NctrlValueSlider({
-          path: 'devices/cmv12000/computed/exposure_time_kp1_ms',
+          path: `${NCTRL_BASE_PATH}devices/cmv12000/computed/exposure_time_kp1_ms`,
           min: 0,
           max: 15,
           integer: true,
@@ -293,7 +294,7 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
         })}
         {NctrlValueText({ text: 'Exposure Time Kneepoint 1' })}
         {NctrlValueSlider({
-          path: 'devices/cmv12000/cooked/vtfl2',
+          path: `${NCTRL_BASE_PATH}devices/cmv12000/cooked/vtfl2`,
           options: {
             64: 'off',
             70: '10 %',
@@ -315,7 +316,7 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
       </div>
       <div style={{ display: showSlopes3 }}>
         {NctrlValueSlider({
-          path: 'devices/cmv12000/computed/exposure_time_kp2_ms',
+          path: `${NCTRL_BASE_PATH}devices/cmv12000/computed/exposure_time_kp2_ms`,
           min: 0,
           max: 15,
           integer: true,
@@ -324,7 +325,7 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
         })}
         {NctrlValueText({ text: 'Exposure Time Kneepoint 2' })}
         {NctrlValueSlider({
-          path: 'devices/cmv12000/cooked/vtfl3',
+          path: `${NCTRL_BASE_PATH}devices/cmv12000/cooked/vtfl3`,
           options: {
             64: 'off',
             70: '10 %',
