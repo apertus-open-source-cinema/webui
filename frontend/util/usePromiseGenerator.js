@@ -15,7 +15,7 @@ export function usePromiseGenerator(pg, dependencies, startValue) {
     console.trace('trace: ');
   }
 
-  if (!pg.toString().startsWith('() =>')) {
+  if (!pg.toString().replaceAll(' ', '').startsWith('()=>')) {
     console.warn(`pg should be a closure. instead it is:`);
     console.warn(pg.toString());
     console.trace('trace: ');
