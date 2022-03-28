@@ -127,10 +127,12 @@ export function NctrlValueTextfield({ path, rerender, rerenderDep }) {
 export function NctrlValueSlider({ path, options, min, max, integer, rerender, rerenderDep }) {
   const classes = useStyles();
 
+  const valueParser = integer ? parseInt : parseFloat;
+
   const nctrlValue = NctrlValue.of(path);
   const [value, setValue] = useState(0.0);
   useEffect(() => {
-    nctrlValue.value().then(x => setValue(parseFloat(x)));
+    nctrlValue.value().then(x => setValue(valueParser(x)));
   }, [path, rerenderDep]);
 
   const MIN_SEND_DELAY = 50; // ms TODO: Maybe adjust this
@@ -147,7 +149,7 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
   const onChangeCommitted = (e, value) =>
     nctrlValue
       .setValue(value)
-      .then(() => nctrlValue.value().then(value => setValue(parseFloat(value))))
+      .then(() => nctrlValue.value().then(value => setValue(valueParser(value))))
       .then(rerender());
 
   const renderLabel = () => {
@@ -156,13 +158,17 @@ export function NctrlValueSlider({ path, options, min, max, integer, rerender, r
     } else if (value < min) {
       return <ArrowLeft />;
     } else {
-      return value.toFixed(integer || value >= 100 ? 0 : 1);
+      if (options) {
+        return options[value] || value.toFixed(integer || value >= 100 ? 0 : 1);
+      } else {
+        return value.toFixed(integer || value >= 100 ? 0 : 1);
+      }
     }
   };
 
   if (options) {
     const marks = Object.keys(options).map(key => ({
-      value: parseFloat(key),
+      value: valueParser(key),
       label: options[key],
     }));
 
@@ -288,7 +294,6 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
           path: `${NCTRL_BASE_PATH}devices/cmv12000/computed/exposure_time_kp1_ms`,
           min: 0,
           max: 15,
-          integer: true,
           rerender,
           rerenderDeps,
         })}
@@ -319,7 +324,6 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
           path: `${NCTRL_BASE_PATH}devices/cmv12000/computed/exposure_time_kp2_ms`,
           min: 0,
           max: 15,
-          integer: true,
           rerender,
           rerenderDeps,
         })}
