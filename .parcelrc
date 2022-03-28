@@ -1,0 +1,8 @@
+{
+  "extends": "@parcel/config-default",
+  "resolvers": ["@parcel/resolver-glob", "..."],
+  "transformers": {
+    "*.{txt,sch,brd,zip,pdf}": ["@parcel/transformer-raw"]
+  }
+}
+
