@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: © 2022 Robin Ole Heinemann <robin.ole.heinemann@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-only
+
+name: Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build
+        run: |
+          apt-get update -q && apt-get install -y -q yarnpkg
+          yarnpkg install
+          yarnpkg build
+      - name: Save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist.${{ github.sha }}
+          path: dist/
