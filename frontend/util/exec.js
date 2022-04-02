@@ -3,7 +3,7 @@
 
 import openSocket from 'socket.io-client';
 
-if (!window.socket) {
+if (!window.socket && !process.env.MOCK) {
   const socket = openSocket('/');
   window.socket = socket;
 }
