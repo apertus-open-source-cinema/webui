@@ -115,6 +115,8 @@ function EditDashboard({ current_yml: currentYaml, setYaml }) {
   const classes = useStyles();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorDialogError, setErrorDialogError] = useState("");
   const inputEl = useRef(null);
 
   return (
@@ -145,14 +147,30 @@ function EditDashboard({ current_yml: currentYaml, setYaml }) {
           </Button>
           <Button
             onClick={() => {
-              setDialogOpen(false);
-              setYaml(inputEl.current.value);
+              try {
+                  _ = safeLoad(inputEl.current.value);
+                  setDialogOpen(false);
+                  setYaml(inputEl.current.value);
+              } catch (error) {
+                  console.warn(error);
+                  setErrorDialogError(error.message);
+                  setErrorDialogOpen(true);
+              }
             }}
             color="primary"
           >
             Apply
           </Button>
         </DialogActions>
+      </Dialog>
+      <Dialog
+        open={errorDialogOpen}
+        onClose={() => setErrorDialogOpen(false)}
+      >
+        <DialogTitle>"Yaml error"</DialogTitle>
+        <DialogContent>
+          <DialogContentText><code style={{ fontSize: 12, whiteSpace: 'pre', color: 'red' }}>{errorDialogError}</code></DialogContentText>
+        </DialogContent>
       </Dialog>
       <Fab
         color="primary"
