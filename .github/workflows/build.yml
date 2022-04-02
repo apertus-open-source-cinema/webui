@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 name: Build
-on: [push]
+on: [push,pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
