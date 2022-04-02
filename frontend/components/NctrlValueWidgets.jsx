@@ -263,6 +263,13 @@ export function NctrlValueSlopeeditor({ text, rerender, rerenderDeps }) {
   const showSlopes2 = selectedIndex >= 1 ? 'block' : 'none';
   const showSlopes3 = selectedIndex == 2 ? 'block' : 'none';
 
+  useEffect(
+    () => {
+      NctrlValue.of(`${NCTRL_BASE_PATH}devices/cmv12000/raw/number_slopes`).setValue(selectedIndex + 1)
+    },
+    [selectedIndex]
+  );
+
   return (
     <div>
       <ToggleButtonGroup
