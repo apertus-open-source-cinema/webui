@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export function Component(props) {
+export function Component() {
   const classes = useStyles();
 
   const serviceStatusScript = NctrlValue.of(NCTRL_BASE_PATH + 'scripts/check_axiom_service_status');
@@ -146,8 +146,6 @@ export function Component(props) {
 
 function AlertDialog(props) {
   const { title, message, open, setOpen, onConfirm } = props;
-
-  // const [open, setOpen] = React.useState(false);
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
