@@ -125,18 +125,18 @@ export function Component() {
             <Button className={classes.button} onClick={() => handlePowerOffConfirmation()}>
               Power off
             </Button>
-            <AlertDialog
+            <ConfirmDialog
               open={isRebootConfirmation}
               setOpen={showRebootConfirmation}
               message="reboot"
               onConfirm={() => rebootScript.value()}
-            ></AlertDialog>
-            <AlertDialog
+            ></ConfirmDialog>
+            <ConfirmDialog
               open={isPowerOffConfirmation}
               setOpen={showPowerOffConfirmation}
               message="power off"
               onConfirm={() => poweroffScript.value()}
-            ></AlertDialog>
+            ></ConfirmDialog>
           </ButtonGroup>
         </Container>
       </div>
@@ -144,7 +144,7 @@ export function Component() {
   );
 }
 
-function AlertDialog(props) {
+function ConfirmDialog(props) {
   const { title, message, open, setOpen, onConfirm } = props;
 
   return (
