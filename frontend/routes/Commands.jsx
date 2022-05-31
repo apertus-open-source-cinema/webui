@@ -14,6 +14,7 @@ import {
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import { NCTRL_BASE_PATH } from '../util/nctrl.js';
+import { exec } from '../util/exec.js';
 
 export const title = 'Commands';
 export const route = '/commands';
@@ -84,14 +85,14 @@ export function Component() {
             <Button
               className={classes.button}
               disabled={serviceStatus}
-              onClick={() => startAXIOMScript.value()}
+              onClick={() => exec('axiom_start.sh').catch(err => console.log(err))}
             >
               Start AXIOM
             </Button>
             <Button
               className={classes.button}
               disabled={!serviceStatus}
-              onClick={() => stopAXIOMScript.value()}
+              onClick={() => exec('axiom_stopsh').catch(err => console.log(err))}
             >
               Stop AXIOM
             </Button>
@@ -102,16 +103,14 @@ export function Component() {
             <Button
               className={classes.button}
               disabled={!serviceStatus}
-              onClick={() => {
-                startHDMIScript.value();
-              }}
+              onClick={() => exec('axiom_sequencer_start.sh').catch(err => console.log(err))}
             >
               Start HDMI
             </Button>
             <Button
               className={classes.button}
               disabled={!serviceStatus}
-              onClick={() => stopHDMIScript.value()}
+              onClick={() => exec('axiom_sequencer_stop.sh').catch(err => console.log(err))}
             >
               Stop HDMI
             </Button>
