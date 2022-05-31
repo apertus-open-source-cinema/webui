@@ -128,13 +128,13 @@ export function Component() {
               open={isRebootConfirmation}
               setOpen={showRebootConfirmation}
               message="reboot"
-              onConfirm={() => rebootScript.value()}
+              onConfirm={() => exec('reboot now').catch(err => console.log(err))}
             ></ConfirmDialog>
             <ConfirmDialog
               open={isPowerOffConfirmation}
               setOpen={showPowerOffConfirmation}
               message="power off"
-              onConfirm={() => poweroffScript.value()}
+              onConfirm={() => exec('shutdown --poweroff').catch(err => console.log(err))}
             ></ConfirmDialog>
           </ButtonGroup>
         </Container>
