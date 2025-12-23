@@ -1637,7 +1637,7 @@ __metadata:
     js-yaml: "npm:^3.13.1"
     markdown-to-jsx: "npm:^6.11.4"
     morgan: "npm:~1.9.1"
-    parcel: "npm:^2.4.0"
+    parcel: "npm:^2.16.3"
     prettier: "npm:^1.19.1"
     process: "npm:^0.11.10"
     react: "npm:^16.12.0"
@@ -3106,7 +3106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parcel@npm:^2.4.0":
+"parcel@npm:^2.16.3":
   version: 2.16.3
   resolution: "parcel@npm:2.16.3"
   dependencies:
