@@ -7,3 +7,5 @@ node_modules/
 dist/
 lib/
 .parcel-cache
+.yarn
+.yarnrc.yml
