@@ -33,7 +33,7 @@
     "js-yaml": "^3.13.1",
     "markdown-to-jsx": "^6.11.4",
     "morgan": "~1.9.1",
-    "parcel": "^2.4.0",
+    "parcel": "^2.16.3",
     "prettier": "^1.19.1",
     "process": "^0.11.10",
     "react": "^16.12.0",
