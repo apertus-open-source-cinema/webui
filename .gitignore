@@ -8,4 +8,5 @@ dist/
 lib/
 .parcel-cache
 .yarn
-.yarnrc.yml
+.pnp.cjs
+.pnp.loader.mjs
