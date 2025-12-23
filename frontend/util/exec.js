@@ -6,6 +6,12 @@ import openSocket from 'socket.io-client';
 if (!window.socket && !process.env.MOCK) {
   const socket = openSocket('/');
   window.socket = socket;
+} else {
+  window.socket = {
+    emit: (name, dummy, callback) => {
+      callback(undefined, '', '');
+    },
+  };
 }
 
 export async function exec(command) {
