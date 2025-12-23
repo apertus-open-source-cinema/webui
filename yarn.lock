@@ -364,7 +364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/config-default@npm:2.16.3":
+"@parcel/config-default@npm:2.16.3, @parcel/config-default@npm:^2.16.3":
   version: 2.16.3
   resolution: "@parcel/config-default@npm:2.16.3"
   dependencies:
@@ -406,7 +406,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@parcel/core@npm:2.16.3":
+"@parcel/core@npm:2.16.3, @parcel/core@npm:^2.16.3":
   version: 2.16.3
   resolution: "@parcel/core@npm:2.16.3"
   dependencies:
@@ -1624,6 +1624,8 @@ __metadata:
     "@material-ui/core": "npm:^4.8.0"
     "@material-ui/icons": "npm:^4.5.1"
     "@material-ui/lab": "npm:^4.0.0-alpha.60"
+    "@parcel/config-default": "npm:^2.16.3"
+    "@parcel/core": "npm:^2.16.3"
     "@parcel/resolver-glob": "npm:^2.4.0"
     "@reduxjs/toolkit": "npm:^1.1.0"
     "@types/react": "npm:^16.9.17"
